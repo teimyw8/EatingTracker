@@ -71,8 +71,8 @@ export default function Home() {
 
   const deleteMeal = (e: any, index: number) => {
     var newMeals = [...meals]
-    newMeals.splice(index,1)
-    
+    newMeals.splice(index, 1)
+
     setMeals(newMeals)
     setClickedMeal(-1)
     return true
@@ -111,11 +111,11 @@ export default function Home() {
       return false
 
     } else if (Number.isNaN(addPortion)
-      ) {
-  
-        //error message: field validation
-        console.log('Portion is not valid number')
-        return false
+    ) {
+
+      //error message: field validation
+      console.log('Portion is not valid number')
+      return false
     } else {
       var newMeal = {
         name: addName, carbs: Number(addCarbs),
@@ -309,7 +309,7 @@ export default function Home() {
       </DivRow>
       {meals.map((item, index) => (
         item.isClicked ?
-          <ClickedMeal key={index} onClick={editMeal} deleteClick={deleteMeal} eatClick={eatMeal}name={item.name} carbs={String(item.carbs)} fat={String(item.fat)} protein={String(item.protein)} portion={String(item.portion)} index={index}></ClickedMeal>
+          <ClickedMeal key={index} onClick={editMeal} deleteClick={deleteMeal} eatClick={eatMeal} name={item.name} carbs={String(item.carbs)} fat={String(item.fat)} protein={String(item.protein)} portion={String(item.portion)} index={index}></ClickedMeal>
           :
           <UnclickedMeal key={index} onClick={clickMeal} name={item.name} index={index}></UnclickedMeal>
       ))}
@@ -320,10 +320,11 @@ export default function Home() {
 }
 //Classes
 
-const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick,  deleteClick, carbs, fat, protein, name, index, portion }) => {
+const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClick, carbs, fat, protein, name, index, portion }) => {
   const [nameDisplay, setNameDisplay] = useState(String(name));
   const [editClick, setEditClick] = useState(false);
   const [deleteClicked, setDeleteClicked] = useState(false);
+  const [eatError, setEatError] = useState(false)
 
   const [editCarbs, setCarbs] = useState(String(carbs));
   const [editFat, setFat] = useState(String(fat));
@@ -362,14 +363,25 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick,  deleteCli
   //If serving not number show message
   const eatSubmit = (e: any, index: number, serving: string, servingOZ: string) => {
     setEatClicked(false)
-    eatClick(e,index,Number(serving))
+    var numberval = false;
+    if(serving){
+      if(Number.isNaN(serving)){
+      
+      }
+    } else if(servingOZ){
+      if(Number.isNaN(servingOZ)){
+      
+      }
+      
+    }
+    eatClick(e, index, Number(serving))
   }
 
   const editSubmit = (e: any, whichMeal: number, newCarbs: string,
     newFat: string, newProtein: string, newPortion: string
   ) => {
     setEditClick(false)
-    onClick(e,index,newCarbs, newFat, newProtein, newPortion)
+    onClick(e, index, newCarbs, newFat, newProtein, newPortion)
   }
 
   // const [carbsDisplay, setCarbs] = useState(carbs.toString);
@@ -390,13 +402,13 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick,  deleteCli
           </DivCell>
 
 
-           <DivCell>
-              <OperationButton onClick={setEatClickT}>Eat</OperationButton>
-              <div></div>
-              <OperationButton onClick={clickEdit}>Edit</OperationButton>
-              <div></div>
-              <OperationButton onClick={(e: any) => deleteClick(e, index)} >Delete</OperationButton>
-            </DivCell>
+          <DivCell>
+            <OperationButton onClick={setEatClickT}>Eat</OperationButton>
+            <div></div>
+            <OperationButton onClick={clickEdit}>Edit</OperationButton>
+            <div></div>
+            <OperationButton onClick={(e: any) => deleteClick(e, index)} >Delete</OperationButton>
+          </DivCell>
 
           <DivCellRight>
             <EditFormWrapper>
@@ -468,7 +480,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick,  deleteCli
                   <div>
                   </div>
                   <DivRow>
-                    <OperationButton onClick={(e: any) =>  onClick(e, index, editCarbs, editFat, editProtein, editPortion)} type="submit">
+                    <OperationButton onClick={(e: any) => onClick(e, index, editCarbs, editFat, editProtein, editPortion)} type="submit">
                       Submit
                     </OperationButton>
                     <OperationButton onClick={clickCancel}>
@@ -476,41 +488,51 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick,  deleteCli
                     </OperationButton>
                   </DivRow>
                 </form>
-                  : eatClicked ?
-                <DivCell>
-                  <form>
-    
-                    <StyledInput size={eatPortion.length || 1}
-                      type="text"
-                      id="name"
-                      placeholder=''
-                      value={eatPortion}
-                      onChange={(e) => setEatPortion(e.target.value)}
-                      required>
-                    </StyledInput>
-                    <label>
-                      g
-                    </label>
-                    <StyledInput size={eatPortion.length || 1}
-                      type="text"
-                      id="name"
-                      placeholder=''
-                      value={eatPortionOZ}
-                      onChange={(e) => setEatPortionOZ(e.target.value)}
-                      required>
-                    </StyledInput>
-                    <label>
-                      oz
-                    </label>
-                  </form>
-                  <OperationButton onClick={(e: any) => eatSubmit(e, index, eatPortion, eatPortionOZ)}>Submit</OperationButton>
-                  <OperationButton onClick={setEatClickF} >Cancel</OperationButton>
-                </DivCell>
-                
                 :
-                <div>
+                eatClicked
+                  ?
+                  <DivCell>
+                    <form>
 
-                </div>
+                      <StyledInput size={eatPortion.length || 1}
+                        type="text"
+                        id="name"
+                        placeholder=''
+                        value={eatPortion}
+                        onChange={(e) => setEatPortion(e.target.value)}
+                        required>
+                      </StyledInput>
+                      <label>
+                        g
+                      </label>
+                      <StyledInput size={eatPortion.length || 1}
+                        type="text"
+                        id="name"
+                        placeholder=''
+                        value={eatPortionOZ}
+                        onChange={(e) => setEatPortionOZ(e.target.value)}
+                        required>
+                      </StyledInput>
+                      <label>
+                        oz
+                      </label>
+                    </form>
+                    <OperationButton onClick={(e: any) => eatSubmit(e, index, eatPortion, eatPortionOZ)}>Submit</OperationButton>
+                    <OperationButton onClick={setEatClickF} >Cancel</OperationButton>
+                    {eatError 
+                    ? <div>
+                        Serving should be only numbers
+                    </div>
+                    :
+                    <div>
+
+                    </div> }
+                  </DivCell>
+
+                  :
+                  <div>
+
+                  </div>
               }
             </EditFormWrapper>
           </DivCellRight>
