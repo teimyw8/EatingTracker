@@ -1,5 +1,27 @@
 html,body{
     height:100%;
      min-height:100%; 
-     background: #1a1717;
-    }
+     background: #898484;
+    }   
+
+.serv label{
+    padding: 5px;
+    /* 
+    float: left;
+    */
+}
+.serv input{
+    padding: 5px;
+    /*
+  float: right;
+  */
+}
+.ingrForm{
+    width:50vw
+}
+
+.unitLabel{
+    /*
+    float:right
+    */
+}
