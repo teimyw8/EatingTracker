@@ -3,42 +3,37 @@ import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } 
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
 import IngEntry from './components/ingEntry';
+import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, DisplayListType } from './components/commonTypes';
 
+export interface SearchDisplayListProps {
+  items: Array<Displayable>;
+  editClick: (e: any, index: number, newMeal: Meal) => boolean,
+  deleteClick: (e: any, index: number) => boolean,
+  eatClick: (e: any, index: number, serving: number) => boolean,
+}
 
 interface ClickedMealProps {
 
-
-  name: string,
-  carbs: string,
-  fat: string,
-  protein: string,
-  onClick: (e: any, index: number, newCarbs: string,
-    newFat: string, newProtein: string, newPortion: string) => boolean,
+  meal: Meal,
+  editClick: (e: any, index: number, newMeal: Meal) => boolean,
   deleteClick: (e: any, index: number) => boolean,
   eatClick: (e: any, index: number, serving: number) => boolean,
   index: number,
-  portion: string
+
 }
+
 interface MealProps {
 
   name: string,
   onClick: (index: number) => void,
   index: number
 }
-interface Meal {
+interface DisplayListProps {
 
-
-  name: string,
-  carbs: number,
-  fat: number,
-  protein: number,
-  isClicked: boolean,
-  portion: number,
 }
 
 export default function Home() {
-  var first = { name: 'chili', carbs: 1, fat: 2, protein: 3, isClicked: false, portion: 1 };
-  var second = { name: 'chicken', carbs: 3, fat: 2, protein: 1, isClicked: false, portion: 1 };
+
 
   const [addName, setAddName] = useState('');
   const [addCarbs, setAddCarbs] = useState('');
@@ -47,49 +42,98 @@ export default function Home() {
   const [addPortion, setAddPortion] = useState('');
   const [addPortionOZ, setAddPortionOZ] = useState('');
 
+  const [eatenList, setEatenList] = useState<Array<EatenEntry>>();
+  const [currentDay, setCurrentDay] = useState<Date>();
+
+  const changeDay = (newDay: Date) => {
+    setCurrentDay(newDay)
+  }
+
+  const [mealDisplayList, setMealDisplayList] = useState<Array<Displayable>>()
+
+  const updateMealDisplayList = (newMeals: Array<Meal>) => {
+    var newDisplayList: Array<Displayable> = new Array();
+    newMeals.forEach(element => {
+
+      newDisplayList.push({ ingrList: element.ingredientList, type: DisplayListType.MEAL, name: element.name, isClicked: false })
+    });
+    setMealDisplayList(newDisplayList);
+  }
 
 
 
-  const [meals, setMeals] = useState<Array<Meal>>([first, second]);
-  const [clickedMeal, setClickedMeal] = useState(-1);
+  const [meals, setMeals] = useState<Array<Meal>>();
   const [addMealClicked, setAddMealClicked] = useState(false);
 
   const [eatenCalories, setEatenCalories] = useState(0);
   const [eatenProtein, setEatenProtein] = useState(0);
-  const clickMeal = (index: number) => {
-    var newMeals = meals
-
-    newMeals[index].isClicked = true
-    if (clickedMeal >= 0)
-      newMeals[clickedMeal].isClicked = false
-
-    setMeals([...newMeals])
-    setClickedMeal(index)
-
-    console.log(meals[index].isClicked)
-  };
 
   const deleteMeal = (e: any, index: number) => {
-    var newMeals = [...meals]
-    newMeals.splice(index, 1)
+    if (meals) {
+      var newMeals = [...meals]
+      newMeals.splice(index, 1)
 
-    setMeals(newMeals)
-    setClickedMeal(-1)
-    return true
+      setMeals(newMeals)
+      return true
+    }
+    return false
+
   };
 
-  const eatMeal = (e: any, index: number, serving: number) => {
+  const eatMeal = (e: any, index: number, servings: number) => {
     //TODO display serving of meal in left side and update calories and protein for day
-    return true
+    e.preventDefault()
+    if (meals) {
+      var eatenMeal = meals[index]
+      var newEntry: EatenEntry = { name: eatenMeal.name, cal: eatenMeal.totalCal()*servings, p: eatenMeal.totalP()*servings, servings:servings };
+      newEntry.name = eatenMeal.name;
+      if (eatenList) {
+        setEatenList([...eatenList, newEntry])
+      } else {
+        setEatenList([newEntry])
+      }
+      return true
+    }
+
+    return false;
+
+
   };
 
-  /*
-  useEffect(() => { 
-    
-   }, [meals])
-   */
-  const submitAddMeal = (e: any) => {
+
+  useEffect(() => {
+    if (currentDay == null) {
+      var today = new Date();
+      setCurrentDay(today);
+    }
+    if (meals == undefined) {
+      var dummyIngr: Ingredient = { name: 'dummyIngr', serv: undefined, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
+      var dummyMealIngr: MealIngr = { ingr: dummyIngr, servsConsumed:  2}
+      var first: MealInter = { name: 'chili', ingredientList: [dummyMealIngr] };
+      var second: MealInter = { name: 'cchicken', ingredientList: [dummyMealIngr] };
+      var firstMeal: Meal = new Meal(first.name, first.ingredientList)
+      var secondMeal: Meal = new Meal(second.name, second.ingredientList)
+      setMeals([firstMeal, secondMeal])
+
+    }
+  }, [])
+
+  useEffect(() => {
+    if (meals) {
+      updateMealDisplayList(meals)
+    }
+
+  }, [meals])
+
+  useEffect(() => {
+    // TODO Call DB to see if theres record for new day
+
+  }, [currentDay])
+
+  const submitAddMeal = (e: any, newMeal: Meal) => {
     e.preventDefault()
+    /*
+    TODO This(form input validation and error displaying) needs to be implemented at the ingEntry level
     if (Number.isNaN(addCarbs)
     ) {
       //error message: field validation
@@ -116,22 +160,18 @@ export default function Home() {
       //error message: field validation
       console.log('Portion is not valid number')
       return false
-    } else {
-      var newMeal = {
-        name: addName, carbs: Number(addCarbs),
-        fat: Number(addFat), protein: Number(addProtein),
-        portion: Number(addPortion), isClicked: false
-      }
+      */
+
+    if (meals) {
       var newMeals = meals
       newMeals.push(newMeal)
       setMeals([...newMeals])
-      setAddCarbs("0")
-      setAddFat("0")
-      setAddProtein("0")
-      setAddPortion("0")
-      setAddPortionOZ("0")
-      setAddMealClicked(false)
     }
+
+    setMeals([newMeal])
+
+    setAddMealClicked(false)
+
 
   };
   const cancelAddMeal = () => {
@@ -140,10 +180,11 @@ export default function Home() {
   const addMeal = () => {
     setAddMealClicked(true)
   };
-  const editMeal = (e: any, whichMeal: number, newCarbs: string,
-    newFat: string, newProtein: string, newPortion: string
+  const editMeal = (e: any, index: number, newMeal: Meal
   ) => {
     e.preventDefault()
+    /*
+    TODO implement at ingEntry level
     if (Number.isNaN(newCarbs)
     ) {
       //error message: field validation
@@ -163,24 +204,24 @@ export default function Home() {
       //error message: field validation
       console.log('Protein is not valid number')
       return false
+*/
 
-    } else {
 
+    if (meals) {
       var newMeals = meals
-      newMeals[whichMeal].carbs = Number(newCarbs)
-      newMeals[whichMeal].fat = Number(newFat)
-      newMeals[whichMeal].protein = Number(newProtein)
-      newMeals[whichMeal].portion = Number(newPortion)
+      newMeals[index] = newMeal
       setMeals([...newMeals])
-      console.log("editClick")
+      console.log("editSubmit")
       return true
     }
+    return false
+
   };
 
   return <MainDiv>
     <LeftSide>
 
-      <CurrentDay />
+      <CurrentDay date={currentDay} eaten={eatenList} changeDay={changeDay} />
 
     </LeftSide>
 
@@ -195,25 +236,24 @@ export default function Home() {
 
           :
 
-          <div>
-            <h1 style={
-              {
-                padding: '5px'
-              }
-            }>Meals</h1>
+          <DivTable>
+            <StyledHeading>Meals</StyledHeading>
             <AddMealButton onClick={addMeal}>
               Add Meal
             </AddMealButton>
-          </div>
+          </DivTable>
 
         }
       </DivRow>
-      {meals.map((item, index) => (
-        item.isClicked ?
-          <ClickedMeal key={index} onClick={editMeal} deleteClick={deleteMeal} eatClick={eatMeal} name={item.name} carbs={String(item.carbs)} fat={String(item.fat)} protein={String(item.protein)} portion={String(item.portion)} index={index}></ClickedMeal>
-          :
-          <UnclickedMeal key={index} onClick={clickMeal} name={item.name} index={index}></UnclickedMeal>
-      ))}
+      {mealDisplayList ?
+        <SearchDisplayList items={mealDisplayList} editClick={editMeal} eatClick={eatMeal} deleteClick={deleteMeal}>
+
+        </SearchDisplayList>
+        :
+        <DivTable>
+        </DivTable >
+      }
+
 
 
     </RightSide>
@@ -221,17 +261,44 @@ export default function Home() {
 }
 //Classes
 
-const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClick, carbs, fat, protein, name, index, portion }) => {
-  const [nameDisplay, setNameDisplay] = useState(String(name));
-  const [editClick, setEditClick] = useState(false);
+const SearchDisplayList: React.FC<SearchDisplayListProps> = ({ items, deleteClick, eatClick, editClick }) => {
+  const [displayList, setDisplayList] = useState(items)
+
+  const [clickedMeal, setClickedMeal] = useState(-1);
+  const clickMeal = (index: number) => {
+    if (displayList) {
+      var newMeals = displayList
+
+      newMeals[index].isClicked = true
+      if (clickedMeal >= 0)
+        newMeals[clickedMeal].isClicked = false
+
+      setDisplayList([...newMeals])
+      setClickedMeal(index)
+    }
+
+  };
+
+  return (
+    <>
+      {displayList.map((item, index) => (
+        item.isClicked ?
+          <ClickedMeal key={index} editClick={editClick} deleteClick={deleteClick} eatClick={eatClick} meal={new Meal(item.name, item.ingrList)} index={index}></ClickedMeal>
+          :
+          <UnclickedMeal key={index} onClick={clickMeal} name={item.name} index={index}></UnclickedMeal>
+      ))}
+    </>
+  )
+
+}
+
+const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, meal, index }) => {
+  const [nameDisplay, setNameDisplay] = useState(String(meal.name));
+  const [editClicked, setEditClicked] = useState(false);
   const [deleteClicked, setDeleteClicked] = useState(false);
   const [eatError, setEatError] = useState(false)
 
-  const [editCarbs, setCarbs] = useState(String(carbs));
-  const [editFat, setFat] = useState(String(fat));
-  const [editProtein, setProtein] = useState(String(protein));
-  const [editPortion, setPortion] = useState(String(portion));
-  const [editPortionOZ, setPortionOZ] = useState(String(Number(portion) * 30));
+
   const [eatClicked, setEatClicked] = useState(false)
 
   const [eatPortion, setEatPortion] = useState('');
@@ -239,11 +306,11 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
   const [eatMeal, setEatMeal] = useState<Meal>();
 
   const clickEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setEditClick(true)
+    setEditClicked(true)
     setEatClicked(false)
   }
   const clickCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setEditClick(false)
+    setEditClicked(false)
   }
   const submitMeal = () => {
 
@@ -256,18 +323,20 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
   const setEatClickT = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setEatClicked(true)
-    setEditClick(false)
+    setEditClicked(false)
   }
 
   //TODO
   //Validate serving is number and check which unit is being used
   //If serving not number show message
   const eatSubmit = (e: any, index: number, serving: string, servingOZ: string) => {
+    //TODO need to pass eaten ammount to EatenEntry creation
+    eatClick(e, index, Number(serving))
     setEatClicked(false)
-    var numberval = false;
+    
     if (serving) {
       if (Number.isNaN(serving)) {
-
+        //TODO eat submit form errors
       }
     } else if (servingOZ) {
       if (Number.isNaN(servingOZ)) {
@@ -275,14 +344,13 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
       }
 
     }
-    eatClick(e, index, Number(serving))
+    
   }
 
-  const editSubmit = (e: any, whichMeal: number, newCarbs: string,
-    newFat: string, newProtein: string, newPortion: string
+  const editSubmit = (e: any, index: number, newMeal: Meal
   ) => {
-    setEditClick(false)
-    onClick(e, index, newCarbs, newFat, newProtein, newPortion)
+    setEditClicked(false)
+    editClick(e, index, newMeal)
   }
 
   // const [carbsDisplay, setCarbs] = useState(carbs.toString);
@@ -313,82 +381,19 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
 
           <DivCellRight>
             <EditFormWrapper>
-              {editClick ?
-                <form onSubmit={submitMeal}>
-                  <StyledLabel >
-                    Carbs:
-                  </StyledLabel>
-                  <StyledInput type="text"
-                    size={editCarbs.length || 1}
-                    id="carbs"
-                    placeholder='0'
-                    value={editCarbs}
-                    onChange={(e) => setCarbs(e.target.value)}
-                    required>
-                  </StyledInput>
-                  <div>
-                    <StyledLabel>
-                      Fat:
-                    </StyledLabel>
+              {editClicked ?
 
-                    <StyledInput type="text"
-                      size={editFat.length || 1}
-                      id="fat"
-                      placeholder='0'
-                      value={editFat}
-                      onChange={(e) => setFat(e.target.value)}
-                      required>
-                    </StyledInput>
-
-                  </div>
-
-                  <StyledLabel>
-                    Protein
-                  </StyledLabel>
-                  <StyledInput type="text"
-                    size={editProtein.length || 1}
-                    id="protein"
-                    placeholder='0'
-                    value={editProtein}
-                    onChange={(e) => setProtein(e.target.value)}
-                    required>
-                  </StyledInput>
+                <div>
+                  TODO
+                  <button onClick={(e: any) => {
+                    setEditClicked(false)
+                    e.preventDefault()
+                  }}>
+                    cancel
+                  </button>
+                </div>
 
 
-                  <StyledInput type="text"
-                    size={editPortion.length || 1}
-                    id="protein"
-                    placeholder='0'
-                    value={editPortion}
-                    onChange={(e) => setPortion(e.target.value)}
-                    required>
-                  </StyledInput>
-                  <StyledLabel>
-                    Portion in g
-                  </StyledLabel>
-
-                  <StyledInput type="text"
-                    size={editPortionOZ.length || 1}
-                    id="protein"
-                    placeholder='0'
-                    value={editPortionOZ}
-                    onChange={(e) => setPortionOZ(e.target.value)}
-                    required>
-                  </StyledInput>
-                  <StyledLabel>
-                    Portion in oz
-                  </StyledLabel>
-                  <div>
-                  </div>
-                  <DivRow>
-                    <OperationButton onClick={(e: any) => onClick(e, index, editCarbs, editFat, editProtein, editPortion)} type="submit">
-                      Submit
-                    </OperationButton>
-                    <OperationButton onClick={clickCancel}>
-                      Cancel
-                    </OperationButton>
-                  </DivRow>
-                </form>
                 :
                 eatClicked
                   ?
@@ -515,16 +520,18 @@ const DivTable = styled.div`
 
  width: 100%; 
  display: table;
+
   
 `
 const DivRow = styled.div`
     
 display: flex;
   flex-direction: row;
- justify-content: center;
+justify-content: start;
   align-items: center;
   
   padding: 2px;
+  margin: 0 0 0 5vw;
   
 `
 const DivCell = styled.div`
@@ -598,9 +605,14 @@ border-radius: 5px;
 
 const StyledInput = styled.input`
 
-margin: 2vw;
+margin: 1vw;
 padding: 2px;
 
 border-radius: 5px;
 `
 
+const StyledHeading = styled.label`
+font-size: 30px;
+  font-weight: bold;
+
+`

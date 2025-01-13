@@ -187,9 +187,13 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
         }
 
         //if no errors 
-
+//TODO
+/*
         if (!errorCheck) {
-            var newItem: MealIngr = { ingr: newIngr, amm: newIngr.serv }
+            if(newIngr.serv){
+
+            }
+            var newItem: MealIngr = { ingr: newIngr, servings: newIngr.serv }
             if (ingrs) {
                 setIngrs(ingrs => [...ingrs!, newItem])
             } else {
@@ -198,6 +202,7 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
 
 
         }
+            */
         e.preventDefault()
 
 
@@ -227,7 +232,7 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
     }
 
     const cancelAddMeal = () => {
-
+        props.onCancel();
     }
 
 
@@ -384,14 +389,14 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
                         {/* TODO
              * List ingredients here, with an edit and remove button next to each
              * Add field to edit ammount of ingr
-             */
+             
 
                             ingrs?.map((item, index) => (
 
-                                <li key={index}>{item.ingr.name} {item.amm}</li>
+                               <li key={index}>{item.ingr.name} {item.amm}</li>
 
                             ))
-
+*/
                         }
                     </ul>
                 </DivRow>
