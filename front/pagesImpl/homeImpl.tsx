@@ -183,10 +183,12 @@ export default function Home() {
 
     setAddMealClicked(false)
 
-
+    return true;
   };
-  const cancelAddMeal = () => {
+  const cancelAddMeal = (e:any) => {
+    e.preventDefault();
     setAddMealClicked(false)
+    return true;
   };
   const addMeal = () => {
     setAddMealClicked(true)
@@ -241,7 +243,7 @@ export default function Home() {
 
 
         {addMealClicked ?
-          <IngEntry onCancel={cancelAddMeal}>
+          <IngEntry onCancel={cancelAddMeal} onSubmit={submitAddMeal}>
 
           </IngEntry>
 

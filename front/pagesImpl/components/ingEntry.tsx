@@ -15,11 +15,11 @@ interface errorEntry {
 
 
 interface IngEntryProp {
-    //  onSubmit: (ing: Ingredient) =>  void;
-    onCancel: () => void;
+    onSubmit: (e: any, meal: Meal) =>  boolean;
+    onCancel: (e: any) => boolean;
 
 }
-const IngEntry = (props: IngEntryProp): React.JSX.Element => {
+const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
     //TODO maybe use map or some other strucutre for both form values and errors
     //Form values
     const [formValues, setFormValues] = useState(
@@ -102,7 +102,8 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
 
 
     //Meal Ingredients
-    const [ingrs, setIngrs] = useState<Array<MealIngr>>()
+    const [mealIngrs, setIngrs] = useState<Array<MealIngr>>()
+
 
 
 
@@ -168,7 +169,6 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
         if (formValues.serv == '' && formValues.servOz == '') {
             setFormError({ ...formError, servCalc: 'Must provide serving size in either grams or ounces' })
             errorCheck = true
-        } else if (formValues.serv == '') {
             if (Number.isNaN(formValues.servOz)) {
                 setFormError({ ...formError, servOz: 'Must be a number' })
                 errorCheck = true
@@ -183,6 +183,12 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
             } else {
                 newIngr.serv = Number(formValues.serv)
                 newIngr.servOz = GtoOZ * Number(formValues.serv)
+            }
+        }
+
+        if(newIngr.serv !=0 ){
+            if(mealIngrs){
+                setIngrs([...mealIngrs, {}])
             }
         }
 
@@ -227,12 +233,14 @@ const IngEntry = (props: IngEntryProp): React.JSX.Element => {
         e.preventDefault()
     }
 
-    const submitMeal = () => {
+    const submitMeal = (e: any) => {
 
+        return onSubmit(e)
+        
     }
 
-    const cancelAddMeal = () => {
-        props.onCancel();
+    const cancelAddMeal = (e: any) => {
+        onCancel(e);
     }
 
 

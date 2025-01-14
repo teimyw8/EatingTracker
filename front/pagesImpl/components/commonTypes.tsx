@@ -8,6 +8,14 @@ export interface Ingredient{
     servOz: number | undefined;
 }
 
+//TODO Make MealIngr into a class;
+/*
+implement function total Cal total P 
+export class MealIngr {
+ingr: Ingredient;
+amount: number;
+}
+*/
 export interface MealIngr {
     ingr: Ingredient;
     servsConsumed : number;
