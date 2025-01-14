@@ -3,13 +3,13 @@ import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } 
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
 import IngEntry from './components/ingEntry';
-import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, DisplayListType } from './components/commonTypes';
+import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
 
 export interface SearchDisplayListProps {
   items: Array<Displayable>;
   editClick: (e: any, index: number, newMeal: Meal) => boolean,
   deleteClick: (e: any, index: number) => boolean,
-  eatClick: (e: any, index: number, serving: number) => boolean,
+  eatClick: (e: any, index: number, ammEaten: number) => boolean,
 }
 
 interface ClickedMealProps {
@@ -17,7 +17,7 @@ interface ClickedMealProps {
   meal: Meal,
   editClick: (e: any, index: number, newMeal: Meal) => boolean,
   deleteClick: (e: any, index: number) => boolean,
-  eatClick: (e: any, index: number, serving: number) => boolean,
+  eatClick: (e: any, index: number, ammEaten: number) => boolean,
   index: number,
 
 }
@@ -43,10 +43,16 @@ export default function Home() {
   const [addPortionOZ, setAddPortionOZ] = useState('');
 
   const [eatenList, setEatenList] = useState<Array<EatenEntry>>();
-  const [currentDay, setCurrentDay] = useState<Date>();
+  const [currentDay, setCurrentDay] = useState(new Date());
+  const [updateCurrentDay,setUpdateCurrentDay] = useState(0)
+  //const [update]
 
   const changeDay = (newDay: Date) => {
+    console.log('in changeDay home old new ', currentDay, newDay)
     setCurrentDay(newDay)
+    setUpdateCurrentDay((prev) => prev + 1)
+    
+
   }
 
   const [mealDisplayList, setMealDisplayList] = useState<Array<Displayable>>()
@@ -80,18 +86,26 @@ export default function Home() {
 
   };
 
-  const eatMeal = (e: any, index: number, servings: number) => {
+  const eatMeal = (e: any, index: number, amEaten: number) => {
     //TODO display serving of meal in left side and update calories and protein for day
     e.preventDefault()
+    
     if (meals) {
+      console.log('In home eatMeal %d %d', index, amEaten, meals )
       var eatenMeal = meals[index]
+      var servings = eatenMeal.servingSize() / amEaten
       var newEntry: EatenEntry = { name: eatenMeal.name, cal: eatenMeal.totalCal()*servings, p: eatenMeal.totalP()*servings, servings:servings };
       newEntry.name = eatenMeal.name;
       if (eatenList) {
+        console.log('In home eatMeal eatenList exitst')
         setEatenList([...eatenList, newEntry])
+        
       } else {
         setEatenList([newEntry])
+        console.log(newEntry )
+        console.log('In home eatMeal no eaten list' )
       }
+      setUpdateCurrentDay((prev) => prev + 1)
       return true
     }
 
@@ -102,10 +116,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    if (currentDay == null) {
-      var today = new Date();
-      setCurrentDay(today);
-    }
+    
     if (meals == undefined) {
       var dummyIngr: Ingredient = { name: 'dummyIngr', serv: undefined, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
       var dummyMealIngr: MealIngr = { ingr: dummyIngr, servsConsumed:  2}
@@ -128,7 +139,7 @@ export default function Home() {
   useEffect(() => {
     // TODO Call DB to see if theres record for new day
 
-  }, [currentDay])
+  }, [currentDay,eatenList])
 
   const submitAddMeal = (e: any, newMeal: Meal) => {
     e.preventDefault()
@@ -221,7 +232,7 @@ export default function Home() {
   return <MainDiv>
     <LeftSide>
 
-      <CurrentDay date={currentDay} eaten={eatenList} changeDay={changeDay} />
+      <CurrentDay key={updateCurrentDay} date={currentDay} eaten={eatenList} changeDay={changeDay} />
 
     </LeftSide>
 
@@ -333,18 +344,31 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
     //TODO need to pass eaten ammount to EatenEntry creation
     eatClick(e, index, Number(serving))
     setEatClicked(false)
-    
+    var amountEaten;
     if (serving) {
       if (Number.isNaN(serving)) {
-        //TODO eat submit form errors
+        //TODO eat submit form err  ors
+        return false
+      } else {
+        amountEaten = Number(serving)
       }
-    } else if (servingOZ) {
-      if (Number.isNaN(servingOZ)) {
 
-      }
+    } else {     
+        if (Number.isNaN(servingOZ)) {
+          return false
+        } else {
+          amountEaten = Number(servingOZ) * OZtoG
+        }
 
     }
     
+    if (amountEaten){
+      eatClick(e, index, amountEaten);
+      return true;
+    }  
+
+    return false;
+   
   }
 
   const editSubmit = (e: any, index: number, newMeal: Meal

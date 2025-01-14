@@ -29,6 +29,7 @@ const CurrentDay = (props: CurrentDayProp): React.JSX.Element => {
             formatedDate.setFullYear(date.getFullYear());
             formatedDate.setMonth(date.getMonth());
             formatedDate.setDate(date.getDate());
+            //setSelectedDate(formatedDate)
             props.changeDay(formatedDate);
         }
     }
@@ -46,13 +47,19 @@ const CurrentDay = (props: CurrentDayProp): React.JSX.Element => {
         }
         setEatenProtein(totalP);
         setEatenCalories(totalCal);
+        console.log('in currentDay eatenList dependent eatenList. Current EatenList : '  + eatenList)
 
     }, [eatenList]);
 
     useEffect(() => {
+    
+
+    }, [props]);
+    useEffect(() => {
         if (props.date) {
             setSelectedDate(props.date)
         }
+
     }, []);
 
     return (
