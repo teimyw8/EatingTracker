@@ -60,7 +60,6 @@ export default function Home() {
   const updateMealDisplayList = (newMeals: Array<Meal>) => {
     var newDisplayList: Array<Displayable> = new Array();
     newMeals.forEach(element => {
-
       newDisplayList.push({ ingrList: element.ingredientList, type: DisplayListType.MEAL, name: element.name, isClicked: false })
     });
     setMealDisplayList(newDisplayList);
@@ -118,8 +117,8 @@ export default function Home() {
   useEffect(() => {
     
     if (meals == undefined) {
-      var dummyIngr: Ingredient = { name: 'dummyIngr', serv: undefined, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
-      var dummyMealIngr: MealIngr = { ingr: dummyIngr, servsConsumed:  2}
+      var dummyIngr: Ingredient = { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
+      var dummyMealIngr: MealIngr = new MealIngr(dummyIngr, 2)
       var first: MealInter = { name: 'chili', ingredientList: [dummyMealIngr] };
       var second: MealInter = { name: 'cchicken', ingredientList: [dummyMealIngr] };
       var firstMeal: Meal = new Meal(first.name, first.ingredientList)
@@ -177,7 +176,7 @@ export default function Home() {
       var newMeals = meals
       newMeals.push(newMeal)
       setMeals([...newMeals])
-    }
+    } 
 
     setMeals([newMeal])
 
@@ -233,8 +232,9 @@ export default function Home() {
 
   return <MainDiv>
     <LeftSide>
-
-      <CurrentDay key={updateCurrentDay} date={currentDay} eaten={eatenList} changeDay={changeDay} />
+        <div className='container'>
+          <CurrentDay key={updateCurrentDay} date={currentDay} eaten={eatenList} changeDay={changeDay} />
+        </div>
 
     </LeftSide>
 
@@ -518,14 +518,16 @@ background-size: auto;
 `
 const LeftSide = styled.div`
 
-height: auto ;
+height: auto;
+min-height: 40vh;
 width: 44vw;
 margin: 2vw;
 padding: 1vh;
 background: #6e13b0;
 background-size: auto;
 float:left;
-border-radius: 50px
+clip-path: polygon(3% 0, 97% 0%, 100% 10%, 100% 90%, 97% 100%, 3% 100%, 0 90%, 0 10%);
+border-radius: 40px;
 
 
 `
@@ -538,7 +540,8 @@ padding: 1vh;
 background: #6e13b0;
 background-size: auto;
 float:right;
-border-radius: 50px
+clip-path: polygon(2% 0, 98% 0, 100% 20%, 100% 80%, 98% 100%, 2% 100%, 0 80%, 0 20%);
+border-radius: 40px;
 
 `
 
@@ -557,7 +560,7 @@ justify-content: start;
   align-items: center;
   
   padding: 2px;
-  margin: 0 0 0 5vw;
+  margin: 0 0 0 2vw;
   
 `
 const DivCell = styled.div`

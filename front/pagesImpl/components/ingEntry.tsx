@@ -15,11 +15,11 @@ interface errorEntry {
 
 
 interface IngEntryProp {
-    onSubmit: (e: any, meal: Meal) =>  boolean;
+    onSubmit: (e: any, meal: Meal) => boolean;
     onCancel: (e: any) => boolean;
 
 }
-const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
+const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
     //TODO maybe use map or some other strucutre for both form values and errors
     //Form values
     const [formValues, setFormValues] = useState(
@@ -29,6 +29,8 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
             f: '',
             p: '',
             cal: '',
+            ingrPortion: '',
+            ingrPortionOz: '',
             serv: '',
             servOz: '',
             mealName: '',
@@ -42,6 +44,8 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
             cal: '',
             serv: '',
             servOz: '',
+            ingrPortion: '',
+            ingrPortionOz: '',
             ingrName: '',
             mealName: ''
         });
@@ -108,7 +112,16 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
 
 
     // Button click functions
-    const addIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const [addIngrClicked, setAddedIngrClicked] = useState(false)
+
+    const clickAddIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setAddedIngrClicked(true)
+    } 
+    const cancelAddIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setAddedIngrClicked(false)
+    } 
+
+    const submitAddIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
         console.log('in add ')
 
         var newIngr: Ingredient = {
@@ -186,29 +199,62 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
             }
         }
 
-        if(newIngr.serv !=0 ){
-            if(mealIngrs){
-                setIngrs([...mealIngrs, {}])
+        var ingrAmm : number  = 0      
+        if ( Number.isNaN(formValues.ingrPortion) ){
+
+            if ( formValues.ingrPortion == '' ) {
+
+                if ( Number.isNaN(formValues.ingrPortionOz) ) {
+
+                    if( formValues.ingrPortionOz == '' ) {
+                        //Both blank
+                        //Need to fill one 
+                    
+                    } else {
+                        //Nan error
+                    }
+                    
+                } else {
+                    //grams is blank but OZ is number
+                    ingrAmm = Number(formValues.ingrPortion)
+                }
+                
+
+            } else {
+                 //Nan error
             }
+        } else {
+            //grams is number
+            ingrAmm = Number(formValues.ingrPortion)
         }
+
+        if (newIngr.serv != 0 && ingrAmm != 0 ) {
+            var newMealIngr : MealIngr = new MealIngr(newIngr,ingrAmm)
+            if (mealIngrs) {
+                
+                setIngrs([...mealIngrs, newMealIngr])
+            } else {
+                setIngrs([newMealIngr])
+            }
+        } 
 
         //if no errors 
-//TODO
-/*
-        if (!errorCheck) {
-            if(newIngr.serv){
-
-            }
-            var newItem: MealIngr = { ingr: newIngr, servings: newIngr.serv }
-            if (ingrs) {
-                setIngrs(ingrs => [...ingrs!, newItem])
-            } else {
-                setIngrs([newItem])
-            }
-
-
-        }
-            */
+        //TODO
+        /*
+                if (!errorCheck) {
+                    if(newIngr.serv){
+        
+                    }
+                    var newItem: MealIngr = { ingr: newIngr, servings: newIngr.serv }
+                    if (ingrs) {
+                        setIngrs(ingrs => [...ingrs!, newItem])
+                    } else {
+                        setIngrs([newItem])
+                    }
+        
+        
+                }
+                    */
         e.preventDefault()
 
 
@@ -234,9 +280,16 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
     }
 
     const submitMeal = (e: any) => {
-
-        return onSubmit(e)
+        if (mealIngrs && formValues.mealName != '' ) {
+            var newMeal = new Meal(formValues.mealName, mealIngrs)
+            console.log(newMeal)
+            return onSubmit(e, newMeal)
+        } else{
+            //TODO display error msg
+            return false
+        }
         
+
     }
 
     const cancelAddMeal = (e: any) => {
@@ -246,27 +299,37 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
 
     //UseEffects
     useEffect(() => {
-        console.log(formError)
+        //console.log(formError)
     }, [formError]);
     useEffect(() => {
-        console.log(formValues)
+        //console.log(formValues)
     }, [formValues]);
     return (
         <MainWrapper>
+            
+            {
+             //Right third   
+            }
             <SearchWrapper>
                 <DivRow>
                     Search Ingredients
                 </DivRow>
                 <DivRow>
-                <SearchInput>
+                    <SearchInput>
 
-                </SearchInput>
+                    </SearchInput>
                 </DivRow>
-                
+
             </SearchWrapper>
+
+            {
+             //Middle third   
+            }
             <IngredientWrapper>
                 <form className={'ingrForm'} onSubmit={() => { return false; }}>
                     <DivRow>
+
+                        
                         <StyledLabel >
                             Name
                         </StyledLabel>
@@ -284,7 +347,11 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
                         <StyledError>
                             {formError.ingrName}
                         </StyledError>
-                    </DivRow>
+                    </DivRow>                    
+
+                    {
+                    // Carbs field
+                    }
                     <DivRow>
                         <StyledLabel>
                             Carbs
@@ -306,6 +373,10 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
                             {formError.ingrName}
                         </StyledError>
                     </DivRow>
+
+                    {
+                    //fat field 
+                    }
                     <DivRow>
                         <StyledLabel >
                             Fat
@@ -322,6 +393,10 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
                             g
                         </label>
                     </DivRow>
+
+                    {
+                    //Protein field 
+                    }
                     <DivRow>
                         <StyledLabel >
                             Protein
@@ -338,7 +413,10 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
                             g
                         </label>
                     </DivRow>
-                    {//add cal field
+
+
+                    {
+                    // Serving field
                     }
                     <DivRow>
                         <label className='serv'>Serving Size  </label>
@@ -366,31 +444,81 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
                             oz
                         </label>
                     </DivRow>
-                    <DivRow>
-                        <OperationButton type='submit' onClick={addIngr}>
-                            Add
-                        </OperationButton>
-                        {
-                            //Add clear functionality
-                        }
+                    {addIngrClicked 
+                    ?
+                        <div>
+                        <DivRow>
+                            <label className='serv'> Amount  </label>
+                        <StyledInput className='serv' size={formValues.ingrPortion.length || 1}
+                            type="text"
+                            id="name"
+                            placeholder=''
+                            value={formValues.ingrPortion}
+                            onChange={(e) => setFormValues({ ...formValues, ingrPortion: e.target.value })}
+                        >
+                        </StyledInput>
 
-                        <OperationButton onClick={clearForm}>
-                            Clear
-                        </OperationButton>
-                        {
-                            //Add Save functionality
-                        }
-                        <OperationButton>
-                            Save
-                        </OperationButton>
-                    </DivRow>
+                        <label className='unitLabel'>
+                            g
+                        </label>
+                        <StyledInput size={formValues.ingrPortionOz.length || 1}
+                            type="text"
+                            id="name"
+                            placeholder=''
+                            value={formValues.ingrPortionOz}
+                            onChange={(e) => setFormValues({ ...formValues, ingrPortionOz: e.target.value })}
+                        >
+                        </StyledInput>
+                        <label className='unitLabel'>
+                            oz
+                        </label>
+                        </DivRow>
+                        <OperationButton type='submit' onClick={submitAddIngr}>
+                                Add
+                            </OperationButton>
+                            <OperationButton type='submit' onClick={cancelAddIngr}>
+                                Cancel
+                            </OperationButton>
+                            </div>
+                    :
+                        <DivRow>
+                            <OperationButton type='submit' onClick={clickAddIngr}>
+                                Add
+                            </OperationButton>
+                            {
+                                //Add clear functionality
+                            }
+
+                            <OperationButton onClick={clearForm}>
+                                Clear
+                            </OperationButton>
+                            {
+                                //Add Save functionality
+                            }
+                            <OperationButton>
+                                Save
+                            </OperationButton>
+                        </DivRow>
+                    }
+                    
                 </form>
 
             </IngredientWrapper>
+
+            {
+             //Left third   
+            }
             <MealWrapper>
                 <DivRow>
-                    <span>Meal Name</span>
-                    <StyledInput></StyledInput>
+                    <StyledLabel>Meal Name</StyledLabel>
+                    <StyledInput
+                    type="text"
+                    id="MealName"
+                    placeholder=''
+                    value={formValues.mealName}
+                    onChange={(e) => setFormValues({ ...formValues, mealName: e.target.value })} >
+
+                    </StyledInput>
                 </DivRow>
                 <DivRow>
                     <ul>
@@ -399,20 +527,21 @@ const IngEntry = ({onSubmit, onCancel}: IngEntryProp): React.JSX.Element => {
              * Add field to edit ammount of ingr
              
 
-                            ingrs?.map((item, index) => (
-
-                               <li key={index}>{item.ingr.name} {item.amm}</li>
-
-                            ))
+                            
 */
+                            mealIngrs?.map((item, index) => (
+                            
+                                <li key={index}>{item.ingr.name} {item.amm}</li>
+                            
+                            ))
                         }
                     </ul>
                 </DivRow>
 
             </MealWrapper>
-            
+
             {
-                //TODO submit and cancel functionity
+          
                 //TODO search ingredients
             }
             <OperationButton onClick={submitMeal}>

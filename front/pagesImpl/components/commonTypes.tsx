@@ -4,7 +4,7 @@ export interface Ingredient{
     p: number;
     c: number | undefined;
     f: number | undefined;
-    serv: number | undefined;
+    serv: number;
     servOz: number | undefined;
 }
 
@@ -16,9 +16,19 @@ ingr: Ingredient;
 amount: number;
 }
 */
-export interface MealIngr {
+export class MealIngr {
     ingr: Ingredient;
-    servsConsumed : number;
+    amm : number;
+
+    constructor( ingr: Ingredient, amm : number ) {
+        this.ingr = ingr,
+        this.amm = amm
+    }
+
+    servs(){
+        return this.amm/this.ingr.serv
+    }
+    
 }
 
  export interface MealInter {
@@ -41,11 +51,11 @@ export class Meal implements MealInter {
         if(this.ingredientList){
             this.ingredientList.forEach(element => {
                 if(element.ingr.cal){
-                    sumCal += (element.ingr.cal * element.servsConsumed)
+                    sumCal += (element.ingr.cal * element.servs())
                 } else if(element.ingr.c && element.ingr.p && element.ingr.f) {
-                    sumCal += element.ingr.c * Ccal * element.servsConsumed
-                    sumCal += element.ingr.p * Ccal * element.servsConsumed
-                    sumCal += element.ingr.f * Fcal * element.servsConsumed
+                    sumCal += element.ingr.c * Ccal * element.servs()
+                    sumCal += element.ingr.p * Ccal * element.servs()
+                    sumCal += element.ingr.f * Fcal * element.servs()
                 }
             });
         }
@@ -55,7 +65,7 @@ export class Meal implements MealInter {
         var sumP : number = 0;
         if(this.ingredientList){
             this.ingredientList.forEach(element => {
-                sumP+=element.ingr.p* element.servsConsumed;
+                sumP+=element.ingr.p* element.servs();
             });
         }
         return sumP;
@@ -64,7 +74,7 @@ export class Meal implements MealInter {
         var sumServing : number = 0;
         if(this.ingredientList){
             this.ingredientList.forEach(element => {
-                sumServing+= element.servsConsumed
+                sumServing+= element.amm
             });
         }
         return sumServing;

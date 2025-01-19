@@ -25,3 +25,7 @@ html,body{
     float:right
     */
 }
+
+.container{
+    margin-left: 1.5vw;
+}

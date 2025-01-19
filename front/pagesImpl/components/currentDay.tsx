@@ -81,6 +81,6 @@ export default CurrentDay;
 
 const EatenMealWrapper = styled.div`
 
-padding: 3vh
+
 
 `
