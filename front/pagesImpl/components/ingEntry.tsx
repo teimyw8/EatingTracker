@@ -15,7 +15,7 @@ interface errorEntry {
 
 
 interface IngEntryProp {
-    onSubmit: (e: any, meal: Meal) => boolean;
+    onSubmit: ( meal: Meal) => boolean;
     onCancel: (e: any) => boolean;
 
 }
@@ -282,8 +282,8 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
     const submitMeal = (e: any) => {
         if (mealIngrs && formValues.mealName != '' ) {
             var newMeal = new Meal(formValues.mealName, mealIngrs)
-            console.log(newMeal)
-            return onSubmit(e, newMeal)
+           //console.log(newMeal)
+            return onSubmit( newMeal)
         } else{
             //TODO display error msg
             return false

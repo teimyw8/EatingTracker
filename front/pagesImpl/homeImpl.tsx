@@ -7,17 +7,18 @@ import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, Display
 
 export interface SearchDisplayListProps {
   items: Array<Displayable>;
-  editClick: (e: any, index: number, newMeal: Meal) => boolean,
-  deleteClick: (e: any, index: number) => boolean,
-  eatClick: (e: any, index: number, ammEaten: number) => boolean,
+  editClick: ( index: number, newMeal: Meal) => boolean,
+  deleteClick: ( index: number) => boolean,
+  eatClick: ( index: number, ammEaten: number) => boolean,
+
 }
 
 interface ClickedMealProps {
 
   meal: Meal,
-  editClick: (e: any, index: number, newMeal: Meal) => boolean,
-  deleteClick: (e: any, index: number) => boolean,
-  eatClick: (e: any, index: number, ammEaten: number) => boolean,
+  editClick: ( index: number, newMeal: Meal) => boolean,
+  deleteClick: ( index: number) => boolean,
+  eatClick: (index: number, ammEaten: number) => boolean,
   index: number,
 
 }
@@ -56,24 +57,37 @@ export default function Home() {
   }
 
   const [mealDisplayList, setMealDisplayList] = useState<Array<Displayable>>()
+  const [updateDisplayList,setUpdateDisplayList] = useState(0)
 
   const updateMealDisplayList = (newMeals: Array<Meal>) => {
+    console.log(newMeals)
     var newDisplayList: Array<Displayable> = new Array();
     newMeals.forEach(element => {
       newDisplayList.push({ ingrList: element.ingredientList, type: DisplayListType.MEAL, name: element.name, isClicked: false })
     });
-    setMealDisplayList(newDisplayList);
+      
+    setMealDisplayList(newDisplayList)
+    setUpdateDisplayList((prev) => prev + 1)
+    
+   
   }
 
 
-
-  const [meals, setMeals] = useState<Array<Meal>>();
+  var dummyIngr: Ingredient = { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
+  var dummyMealIngr: MealIngr = new MealIngr(dummyIngr, 2)
+  var first: MealInter = { name: 'chili', ingredientList: [dummyMealIngr] };
+  var second: MealInter = { name: 'cchicken', ingredientList: [dummyMealIngr] };
+  var firstMeal: Meal = new Meal(first.name, first.ingredientList)
+  var secondMeal: Meal = new Meal(second.name, second.ingredientList)
+  const [meals, setMeals] = useState<Array<Meal>>([firstMeal,secondMeal]);
   const [addMealClicked, setAddMealClicked] = useState(false);
 
   const [eatenCalories, setEatenCalories] = useState(0);
   const [eatenProtein, setEatenProtein] = useState(0);
 
-  const deleteMeal = (e: any, index: number) => {
+
+  //Click functions
+  const deleteMeal = ( index: number) => {
     if (meals) {
       var newMeals = [...meals]
       newMeals.splice(index, 1)
@@ -85,9 +99,8 @@ export default function Home() {
 
   };
 
-  const eatMeal = (e: any, index: number, amEaten: number) => {
+  const eatMeal = ( index: number, amEaten: number) => {
     //TODO display serving of meal in left side and update calories and protein for day
-    e.preventDefault()
     
     if (meals) {
       console.log('In home eatMeal %d %d', index, amEaten, meals )
@@ -112,113 +125,33 @@ export default function Home() {
 
 
   };
-
-
-  useEffect(() => {
-    
-    if (meals == undefined) {
-      var dummyIngr: Ingredient = { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
-      var dummyMealIngr: MealIngr = new MealIngr(dummyIngr, 2)
-      var first: MealInter = { name: 'chili', ingredientList: [dummyMealIngr] };
-      var second: MealInter = { name: 'cchicken', ingredientList: [dummyMealIngr] };
-      var firstMeal: Meal = new Meal(first.name, first.ingredientList)
-      var secondMeal: Meal = new Meal(second.name, second.ingredientList)
-      setMeals([firstMeal, secondMeal])
-
-    }
-  }, [])
-
-  useEffect(() => {
-    if (meals) {
-      updateMealDisplayList(meals)
-    }
-
-  }, [meals])
-
-  useEffect(() => {
-    // TODO Call DB to see if theres record for new day
-
-  }, [currentDay,eatenList])
-
-  const submitAddMeal = (e: any, newMeal: Meal) => {
-    e.preventDefault()
-    /*
-    TODO This(form input validation and error displaying) needs to be implemented at the ingEntry level
-    if (Number.isNaN(addCarbs)
-    ) {
-      //error message: field validation
-      console.log('Carbs is not valid number')
-      return false
-    }
-    else if (Number.isNaN(addFat)
-    ) {
-      //error message: field validation
-      console.log('Fat is not valid number')
-      return false
-
-    }
-    else if (Number.isNaN(addProtein)
-    ) {
-
-      //error message: field validation
-      console.log('Protein is not valid number')
-      return false
-
-    } else if (Number.isNaN(addPortion)
-    ) {
-
-      //error message: field validation
-      console.log('Portion is not valid number')
-      return false
-      */
+  const submitAddMeal = ( newMeal: Meal) => {
 
     if (meals) {
-      var newMeals = meals
-      newMeals.push(newMeal)
-      setMeals([...newMeals])
-    } 
-
-    setMeals([newMeal])
+      //console.log(meals)
+      setMeals([...meals, newMeal])
+    } else {
+      setMeals([newMeal])
+    }    
 
     setAddMealClicked(false)
 
     return true;
   };
+
   const cancelAddMeal = (e:any) => {
     e.preventDefault();
     setAddMealClicked(false)
     return true;
   };
+
   const addMeal = () => {
     setAddMealClicked(true)
   };
-  const editMeal = (e: any, index: number, newMeal: Meal
+
+  const editMeal = ( index: number, newMeal: Meal
   ) => {
-    e.preventDefault()
-    /*
-    TODO implement at ingEntry level
-    if (Number.isNaN(newCarbs)
-    ) {
-      //error message: field validation
-      console.log('Carbs is not valid number')
-      return false
-    }
-    else if (Number.isNaN(newFat)
-    ) {
-      //error message: field validation
-      console.log('Fat is not valid number')
-      return false
-
-    }
-    else if (Number.isNaN(newProtein)
-    ) {
-
-      //error message: field validation
-      console.log('Protein is not valid number')
-      return false
-*/
-
-
+    
     if (meals) {
       var newMeals = meals
       newMeals[index] = newMeal
@@ -229,6 +162,31 @@ export default function Home() {
     return false
 
   };
+
+// Use Effect
+  useEffect(() => {
+    
+    if (meals == undefined) {
+      
+      //etMeals([firstMeal, secondMeal])
+
+    }
+  }, [])
+
+  useEffect(() => {
+    if (meals) {
+      //console.log(meals)
+      updateMealDisplayList(meals)
+    }
+
+  }, [meals])
+
+  useEffect(() => {
+    // TODO Call DB to see if theres record for new day
+
+  }, [currentDay,eatenList])
+
+
 
   return <MainDiv>
     <LeftSide>
@@ -259,7 +217,7 @@ export default function Home() {
         }
       </DivRow>
       {mealDisplayList ?
-        <SearchDisplayList items={mealDisplayList} editClick={editMeal} eatClick={eatMeal} deleteClick={deleteMeal}>
+        <SearchDisplayList key={updateDisplayList} items={mealDisplayList} editClick={editMeal} eatClick={eatMeal} deleteClick={deleteMeal}>
 
         </SearchDisplayList>
         :
@@ -344,7 +302,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
   //If serving not number show message
   const eatSubmit = (e: any, index: number, serving: string, servingOZ: string) => {
     //TODO need to pass eaten ammount to EatenEntry creation
-    eatClick(e, index, Number(serving))
+    eatClick( index, Number(serving))
     setEatClicked(false)
     var amountEaten;
     if (serving) {
@@ -365,7 +323,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
     }
     
     if (amountEaten){
-      eatClick(e, index, amountEaten);
+      eatClick(index, amountEaten);
       return true;
     }  
 
@@ -376,7 +334,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
   const editSubmit = (e: any, index: number, newMeal: Meal
   ) => {
     setEditClicked(false)
-    editClick(e, index, newMeal)
+    editClick(index, newMeal)
   }
 
   // const [carbsDisplay, setCarbs] = useState(carbs.toString);
@@ -402,7 +360,11 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
             <div></div>
             <OperationButton onClick={clickEdit}>Edit</OperationButton>
             <div></div>
-            <OperationButton onClick={(e: any) => deleteClick(e, index)} >Delete</OperationButton>
+            <OperationButton onClick={(e: any) => {
+              deleteClick(index);
+              e.preventDefault()
+            }}>
+             Delete</OperationButton>
           </DivCell>
 
           <DivCellRight>
