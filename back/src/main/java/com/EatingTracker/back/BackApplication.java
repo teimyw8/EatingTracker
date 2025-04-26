@@ -1,4 +1,4 @@
-package com.example.back;
+package com.EatingTracker.back;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

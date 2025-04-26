@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 export interface Ingredient{
     name: string;
     cal: number | undefined;
@@ -86,6 +87,7 @@ export interface EatenEntry {
     cal: number;
     p: number;
     servings: number;   
+    editClicked: boolean;
 }
 
 
@@ -105,3 +107,22 @@ export const OZtoG : number = 28.3495;
 export const GtoOZ : number = 0.035274;
 export const Fcal : number = 9;
 export const Ccal : number = 4;
+
+
+// STYLES
+
+export const DivRow = styled.div`
+    
+display: flex;
+  flex-direction: row;
+justify-content: start;
+  align-items: center;
+  
+  padding: 2px;
+  margin: 0 0 0 2vw;
+  
+`
+
+export const StyledListItem = styled.li`
+
+`

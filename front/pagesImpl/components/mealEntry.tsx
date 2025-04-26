@@ -14,12 +14,12 @@ interface errorEntry {
 
 
 
-interface IngEntryProp {
+interface MealEntryProp {
     onSubmit: ( meal: Meal) => boolean;
     onCancel: (e: any) => boolean;
 
 }
-const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
+const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => {
     //TODO maybe use map or some other strucutre for both form values and errors
     //Form values
     const [formValues, setFormValues] = useState(
@@ -274,8 +274,8 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
         clearFormValues()
         //Clear form errors
         clearFormErrors()
-        console.log('clear end')
-        console.log(formValues)
+        //console.log('clear end')
+       // console.log(formValues)
         e.preventDefault()
     }
 
@@ -444,6 +444,19 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
                             oz
                         </label>
                     </DivRow>
+                    <DivRow>
+                    <label className='ingrFormCalLabel'>
+                            Calories
+                        </label>
+                        <StyledInput size={formValues.servOz.length || 2}
+                            type="text"
+                            id="Calories"
+                            placeholder=''
+                            value={formValues.cal}
+                            onChange={(e) => setFormValues({ ...formValues, cal: e.target.value })}
+                        >
+                        </StyledInput>
+                    </DivRow>
                     {addIngrClicked 
                     ?
                         <div>
@@ -485,15 +498,13 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
                             <OperationButton type='submit' onClick={clickAddIngr}>
                                 Add
                             </OperationButton>
-                            {
-                                //Add clear functionality
-                            }
+                            
 
                             <OperationButton onClick={clearForm}>
                                 Clear
                             </OperationButton>
                             {
-                                //Add Save functionality
+                                //TODO Add Save functionality
                             }
                             <OperationButton>
                                 Save
@@ -530,8 +541,8 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
                             
 */
                             mealIngrs?.map((item, index) => (
-                            
-                                <li key={index}>{item.ingr.name} {item.amm}</li>
+                             
+                                <li key={index}>{item.ingr.name} {item.amm} g {item.ingr.cal} cals {item.ingr.p}g P </li>
                             
                             ))
                         }
@@ -554,7 +565,7 @@ const IngEntry = ({ onSubmit, onCancel }: IngEntryProp): React.JSX.Element => {
     )
 }
 
-export default IngEntry;
+export default MealEntry;
 
 const DivRow = styled.div`
     

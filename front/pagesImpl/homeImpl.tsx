@@ -2,9 +2,12 @@ import styled from '@emotion/styled'
 import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } from 'react';
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
-import IngEntry from './components/ingEntry';
+import MealEntry from './components/mealEntry';
 import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
-
+//TODO 
+//ADD MEAL
+//EAT MEAL
+//EATEN TOTAL
 export interface SearchDisplayListProps {
   items: Array<Displayable>;
   editClick: ( index: number, newMeal: Meal) => boolean,
@@ -23,6 +26,7 @@ interface ClickedMealProps {
 
 }
 
+//prob rename this TODO
 interface MealProps {
 
   name: string,
@@ -106,7 +110,7 @@ export default function Home() {
       console.log('In home eatMeal %d %d', index, amEaten, meals )
       var eatenMeal = meals[index]
       var servings = eatenMeal.servingSize() / amEaten
-      var newEntry: EatenEntry = { name: eatenMeal.name, cal: eatenMeal.totalCal()*servings, p: eatenMeal.totalP()*servings, servings:servings };
+      var newEntry: EatenEntry = { name: eatenMeal.name, cal: eatenMeal.totalCal()*servings, p: eatenMeal.totalP()*servings, servings:servings, editClicked: false };
       newEntry.name = eatenMeal.name;
       if (eatenList) {
         console.log('In home eatMeal eatenList exitst')
@@ -201,9 +205,9 @@ export default function Home() {
 
 
         {addMealClicked ?
-          <IngEntry onCancel={cancelAddMeal} onSubmit={submitAddMeal}>
+          <MealEntry onCancel={cancelAddMeal} onSubmit={submitAddMeal}>
 
-          </IngEntry>
+          </MealEntry>
 
           :
 
