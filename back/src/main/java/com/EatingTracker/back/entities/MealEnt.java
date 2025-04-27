@@ -1,4 +1,4 @@
-package com.EatingTracker.back.model;
+package com.EatingTracker.back.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="meal")
-public class Meal{
+public class MealEnt {
 
     @Id
     @Column(name="ID")  
@@ -19,7 +19,7 @@ public class Meal{
     @Column
     private String name;
 
-    public Meal(String name){
+    public MealEnt(String name){
         this.name = name;
     }
 }
