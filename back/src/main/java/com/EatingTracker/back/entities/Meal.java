@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="meal")
-public class MealEnt {
+public class Meal {
 
     @Id
     @Column(name="ID")  
@@ -19,7 +19,7 @@ public class MealEnt {
     @Column
     private String name;
 
-    public MealEnt(String name){
+    public Meal(String name){
         this.name = name;
     }
 }

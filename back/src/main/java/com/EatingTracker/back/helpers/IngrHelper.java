@@ -1,20 +1,20 @@
 package com.EatingTracker.back.helpers;
 
-import com.EatingTracker.back.entities.IngrEnt;
-import com.EatingTracker.back.models.Ingr;
+import com.EatingTracker.back.entities.Ingr;
+import com.EatingTracker.back.models.IngrModel;
 
 public class IngrHelper {
 
 
-    public static Ingr ingrEntTo(IngrEnt ent){
-        IngrEnt tempEnt = ent;
-        Ingr newIngr = new Ingr(ent.getCals(),ent.getProt(),ent.getName(), ent.getServG()) ;
+    public static IngrModel ingrEntTo(Ingr ent){
+        Ingr tempEnt = ent;
+        IngrModel newIngr = new IngrModel(ent.getCals(),ent.getProt(),ent.getName(), ent.getServG()) ;
         return newIngr;
     }
 
-    public static IngrEnt toIngrEnt(Ingr newIngr){
-        Ingr tempIngr = newIngr;
-        IngrEnt newEnt = new IngrEnt(newIngr.getName(),newIngr.getCals(),newIngr.getServG(),newIngr.getProt() ) ;
+    public static Ingr toIngrEnt(IngrModel newIngr){
+        IngrModel tempIngr = newIngr;
+        Ingr newEnt = new Ingr(newIngr.getName(),newIngr.getCals(),newIngr.getServG(),newIngr.getProt() ) ;
         return newEnt;
     }
 

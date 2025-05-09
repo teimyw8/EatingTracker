@@ -17,8 +17,9 @@ ingr: Ingredient;
 amount: number;
 }
 */
+
 export class MealIngr {
-    ingr: Ingredient;
+    ingr : Ingredient;
     amm : number;
 
     constructor( ingr: Ingredient, amm : number ) {

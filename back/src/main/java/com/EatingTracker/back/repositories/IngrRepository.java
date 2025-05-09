@@ -1,10 +1,10 @@
 package com.EatingTracker.back.repositories;
 
-import com.EatingTracker.back.entities.IngrEnt;
+import com.EatingTracker.back.entities.Ingr;
 import org.springframework.data.jpa.repository.*;
 
 
 
-public interface IngrRepository extends JpaRepository<IngrEnt, Long> {
+public interface IngrRepository extends JpaRepository<Ingr, Long> {
 
 }

@@ -1,21 +1,22 @@
 package com.EatingTracker.back.services;
 
-import com.EatingTracker.back.models.Meal;
+import com.EatingTracker.back.models.MealModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.EatingTracker.back.repositories.MealRepository;
-import com.EatingTracker.back.entities.MealEnt;
+import com.EatingTracker.back.entities.Meal;
 
 @Service
 public class MealService {
 
-    
+    //      TODO ALL
+
     @Autowired 
     MealRepository mealRepository;
 
-    public void addMeal(Meal x){
-        Meal newMeal = x;
+    public void addMeal(MealModel x){
+        MealModel newMeal = x;
 
         try{
             //mealRepository.saveAndFlush(newMeal);
@@ -27,4 +28,21 @@ public class MealService {
 
         
     }
+
+    public void getMeal(int id){
+
+    }
+
+    public void getAllMeal(int max){
+
+    }
+
+    public void editMeal(int id){
+
+    }
+
+    public void delMeal(int id) {
+        
+    }
 }
+

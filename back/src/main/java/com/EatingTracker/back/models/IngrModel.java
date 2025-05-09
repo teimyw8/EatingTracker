@@ -1,43 +1,19 @@
-package com.EatingTracker.back.entities;
+package com.EatingTracker.back.models;
 
-import jakarta.persistence.*;
-
-
-@Entity
-@Table(name="ingr")
-public class IngrEnt {
-    @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
+public class IngrModel {
     private String name;
-
-    @Column
     private double cals;
-
-    @Column(name="PROTEIN")
     private double prot;
-
-    @Column
     private double servG;
 
-    public IngrEnt( String name, double cals, double servG, double prot) {
-        this.name = name;
+
+    public IngrModel (){}
+
+    public IngrModel(double cals, double prot, String name, double servG) {
         this.cals = cals;
-        this.servG = servG;
         this.prot = prot;
-    }
-
-    public IngrEnt(){ }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.name = name;
+        this.servG = servG;
     }
 
     public String getName() {
