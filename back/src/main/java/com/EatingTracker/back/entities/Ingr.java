@@ -1,5 +1,12 @@
 package com.EatingTracker.back.entities;
 
+
+import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
+
+import com.EatingTracker.back.models.IngrModel;
+
 import jakarta.persistence.*;
 
 
@@ -8,8 +15,8 @@ import jakarta.persistence.*;
 public class Ingr {
     @Id
     @Column(name="ID")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    private UUID id;
 
     @Column
     private String name;
@@ -23,6 +30,8 @@ public class Ingr {
     @Column
     private double servG;
 
+//Constructors
+
     public Ingr( String name, double cals, double servG, double prot) {
         this.name = name;
         this.cals = cals;
@@ -30,13 +39,37 @@ public class Ingr {
         this.prot = prot;
     }
 
+    public Ingr(IngrModel model){
+        this.name = model.getName();
+        this.cals = model.getCals();
+        this.servG = model.getServG();
+        this.prot = model.getProt();
+    }
+
+    public Ingr(IngrModel model, UUID id ){
+        this.name = model.getName();
+        this.cals = model.getCals();
+        this.servG = model.getServG();
+        this.prot = model.getProt();
+        this.id = id;
+    }
+
     public Ingr(){ }
 
-    public Long getId() {
+// custom methods
+    public void update(Ingr model){
+        this.name = model.getName();
+        this.cals = model.getCals();
+        this.servG = model.getServG();
+        this.prot = model.getProt();
+    }
+
+// Getters Setters
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

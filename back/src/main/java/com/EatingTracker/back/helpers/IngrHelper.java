@@ -7,13 +7,13 @@ public class IngrHelper {
 
 
     public static IngrModel ingrEntTo(Ingr ent){
-        Ingr tempEnt = ent;
+
         IngrModel newIngr = new IngrModel(ent.getCals(),ent.getProt(),ent.getName(), ent.getServG()) ;
         return newIngr;
     }
 
     public static Ingr toIngrEnt(IngrModel newIngr){
-        IngrModel tempIngr = newIngr;
+       
         Ingr newEnt = new Ingr(newIngr.getName(),newIngr.getCals(),newIngr.getServG(),newIngr.getProt() ) ;
         return newEnt;
     }

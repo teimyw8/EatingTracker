@@ -33,13 +33,7 @@ export class MealIngr {
     
 }
 
- export interface MealInter {
-    name: string;
-    ingredientList: Array<MealIngr>;
-    
-}
-
-export class Meal implements MealInter {
+export class Meal {
     name :string
     ingredientList : Array<MealIngr>
    

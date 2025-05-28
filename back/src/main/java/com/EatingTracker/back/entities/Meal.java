@@ -1,5 +1,9 @@
 package com.EatingTracker.back.entities;
 
+import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,13 +17,26 @@ public class Meal {
 
     @Id
     @Column(name="ID")  
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    private UUID id;
 
     @Column
     private String name;
 
+    public Meal () {      
+    }
+    
     public Meal(String name){
         this.name = name;
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    
 }

@@ -1,45 +1,57 @@
 package com.EatingTracker.back.controllers;
+import com.EatingTracker.back.entities.Ingr;
 import com.EatingTracker.back.models.IngrModel;
 import com.EatingTracker.back.services.IngrService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 
 @RestController
 @RequestMapping("/ingr")
 public class IngrController{
 
-    // TODO HOOKUP TO SERVICE METHODS AND DECIDE RESPONSE FORMAT
+    /*
+     *  TODO
+     *  edit logic and hookup
+     *  delete logic and hookup
+     */
     @Autowired
     IngrService ingrService;
 
     @PostMapping()
-    public String addIngr(@RequestBody IngrModel newIngr) {
-        ingrService.addIngr(newIngr);
-        return "created";
+    public ResponseEntity<Ingr> addIngr(@RequestBody IngrModel newIngr) {
+       
+        return ingrService.addIngr(newIngr);
     }
 
     @GetMapping()
-    public String getIngr(@RequestParam String id) {
-        return new String();
+    public ResponseEntity<Ingr> getIngr(@RequestParam UUID id) {
+
+        return ingrService.getIngr(id);
     }
 
     @GetMapping("/all")
-    public String getAllIngr(@RequestParam String max) {
-        return new String();
+    public ResponseEntity<List<Ingr>> getAllIngr(@RequestParam Optional<Integer> max) {
+      
+            return ingrService.getAllIngr(max);
     }
 
     @PostMapping("/edit")
-    public String editIngr(@RequestBody String id){
-        return new String();
-
+    public ResponseEntity<Ingr> editIngr(@RequestBody Ingr ingr){
+        
+        return ingrService.editIngr(ingr);
     }
 
-    @PostMapping("/delete")
-    public String deleteIngr(@RequestBody String id){
-        return new String();
-
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteIngr(@RequestParam UUID id){
+        
+        return ingrService.delIngr(id);
     }
     
 
