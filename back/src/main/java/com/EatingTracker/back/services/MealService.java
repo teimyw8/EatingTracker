@@ -97,11 +97,62 @@ public class MealService {
 
     }
 
-    public void editMeal(int id){
+    // TODO must be a better return here
+    public ResponseEntity<MealModel> editMeal(String id, MealModel newMealModel){
+
+
+        Optional<Meal> newMealMaybe = mealRepository.findById(UUID.fromString(id));
+        Meal newMeal;
+
+
+        if(newMealMaybe.isPresent()){
+            
+            
+            newMeal = newMealMaybe.get();
+            newMeal.setName(newMealModel.getName());
+
+            //Remove all mealIngrs with meal id
+            List<MealIngr> mealIngrsToDelete = mealIngrRepository.findByMealid(UUID.fromString(id));
+
+            for ( MealIngr mealIngr : mealIngrsToDelete ){
+                mealIngrRepository.delete(mealIngr);
+            }
+            
+            //Add all mealIngrs in newMealModel
+            for( MealIngrModel mealIngrModel : newMealModel.getIngrs() ){
+                MealIngr newMealIngr = new MealIngr(UUID.fromString(id), mealIngrModel);
+                mealIngrRepository.save(newMealIngr);
+            }
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } else {
+            throw new MealNotFoundException(UUID.fromString(id));
+        }
 
     }
 
-    public void delMeal(int id) {
+    public ResponseEntity<String> deleteMeal(String id) {
+
+        Optional<Meal> mealToDelete = mealRepository.findById(UUID.fromString(id));
+
+        if( mealToDelete.isPresent() ){
+            mealRepository.delete(mealToDelete.get());
+
+            //TODO delete all mealingr w meal id
+            List<MealIngr> mealIngrsToDelete = mealIngrRepository.findByMealid(UUID.fromString(id));
+
+            for ( MealIngr mealIngr : mealIngrsToDelete ){
+                mealIngrRepository.delete(mealIngr);
+            }
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            throw new MealNotFoundException(UUID.fromString(id));
+        }
+        
+
+
         
     }
 }

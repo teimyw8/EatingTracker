@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/meal")
 public class MealController{
 
-    // TODO HOOKUP TO SERVICE METHODS AND DECIDE RESPONSE FORMAT
+    
 
     @Autowired
     MealService mealService;
@@ -51,12 +51,14 @@ public class MealController{
         return mealService.getAllMeal(max);
     }
 
+    //TODO 
     @PostMapping("/edit")
-    public String editMeal(@RequestBody String id){
-        return new String();
+    public ResponseEntity<MealModel> editMeal(@RequestBody String id, @RequestBody MealModel newMeal){
+        return mealService.editMeal(id, newMeal);
 
     }
 
+    //TODO
     @PostMapping("/delete")
     public String deleteMeal(@RequestBody String id){
         return new String();

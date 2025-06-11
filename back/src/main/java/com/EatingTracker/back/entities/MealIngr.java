@@ -2,6 +2,8 @@ package com.EatingTracker.back.entities;
 
 import java.util.UUID;
 
+import com.EatingTracker.back.models.MealIngrModel;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +36,12 @@ public class MealIngr {
         this.ingrid = ingrId;
         this.mealid = mealId;
         this.amm = amm;
+    }
+
+    public MealIngr(UUID mealId, MealIngrModel mealIngrModel){
+        this.mealid = mealId;
+        this.ingrid = UUID.fromString(mealIngrModel.getIngrId());
+        this.amm = mealIngrModel.getAmm();
     }
 
     public UUID getIngrId() {
