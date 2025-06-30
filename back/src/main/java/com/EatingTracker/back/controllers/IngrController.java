@@ -48,7 +48,7 @@ public class IngrController{
         return ingrService.editIngr(ingr);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<String> deleteIngr(@RequestParam UUID id){
         
         return ingrService.delIngr(id);

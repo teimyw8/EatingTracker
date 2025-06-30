@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,6 +25,10 @@ import exceptions.MealNotFoundException;
 
 import com.EatingTracker.back.entities.Meal;
 import com.EatingTracker.back.entities.MealIngr;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+//import org.json.JSONObject;
 
 @Service
 public class MealService {
@@ -72,14 +77,23 @@ public class MealService {
         Optional<Meal> possibleMeal = mealRepository.findById(id);
         
         if(possibleMeal.isPresent()){
-                //Convert returned meal into MealModel(frontend consumable form) and put into ResponseEntity with 200 status to return
-               Meal returnedMeal = possibleMeal.get();
+            //Convert returned meal into MealModel(frontend consumable form) and put into ResponseEntity with 200 status to return
+            Meal returnedMeal = possibleMeal.get();
 
-               List<MealIngr> mealIngrs = mealIngrRepository.findByMealid(returnedMeal.getId());
+            List<MealIngr> mealIngrs = mealIngrRepository.findByMealid(returnedMeal.getId());
 
-               MealModel returnedMealModel = new MealModel(returnedMeal.getName() , MealIngrRepository.mealIngrListToModel(mealIngrs));
+            MealModel returnedMealModel = new MealModel(returnedMeal.getName() , MealIngrRepository.mealIngrListToModel(mealIngrs));
 
-               return new ResponseEntity<MealModel>(returnedMealModel, HttpStatus.OK);
+            ObjectMapper mapper = new ObjectMapper();
+            try{
+                String json = mapper.writeValueAsString(returnedMealModel);
+                System.out.println( json);
+            } catch (Exception e) {
+                System.out.println("Error converting Meal to JSON: " + e.getMessage());
+            }
+            
+
+            return new ResponseEntity<MealModel>(returnedMealModel, HttpStatus.OK);
         } else {
             // Nothing returned by query, throw MealNotFound
             throw new MealNotFoundException(id);
