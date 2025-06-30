@@ -103,6 +103,9 @@ export const GtoOZ : number = 0.035274;
 export const Fcal : number = 9;
 export const Ccal : number = 4;
 
+export const getFontSize = (length: number)  => {
+    return 4/(length/5) + 'vw';
+}
 
 // STYLES
 

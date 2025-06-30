@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } 
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
 import MealEntry from './components/mealEntry';
-import { EatenEntry, Ingredient, Meal, MealInter, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
+import { EatenEntry, Ingredient, Meal, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
 //TODO 
 //ADD MEAL
 //EAT MEAL
@@ -79,8 +79,8 @@ export default function Home() {
 
   var dummyIngr: Ingredient = { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
   var dummyMealIngr: MealIngr = new MealIngr(dummyIngr, 2)
-  var first: MealInter = { name: 'chili', ingredientList: [dummyMealIngr] };
-  var second: MealInter = { name: 'cchicken', ingredientList: [dummyMealIngr] };
+  var first: Meal = new Meal(  'chili' , [dummyMealIngr]) ;
+  var second: Meal = new Meal(  'cchicken',  [dummyMealIngr] );
   var firstMeal: Meal = new Meal(first.name, first.ingredientList)
   var secondMeal: Meal = new Meal(second.name, second.ingredientList)
   const [meals, setMeals] = useState<Array<Meal>>([firstMeal,secondMeal]);
