@@ -29,3 +29,8 @@ html,body{
 .container{
     margin-left: 1.5vw;
 }
+
+.ingrFormLabel{
+    min-width: 130px;
+
+}

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
+
 import {
     MealIngr, Ingredient, Meal, OZtoG,
     GtoOZ,
@@ -7,6 +8,7 @@ import {
     Ccal,
     getFontSize
 } from './commonTypes'
+import { get } from 'http';
 
 interface errorEntry {
     type: string
@@ -34,7 +36,6 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
             ingrPortionOz: '',
             serv: '',
             servOz: '',
-            mealName: '',
         })
 
     const clearFormValues = () => {
@@ -48,7 +49,6 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
             ingrPortion: '',
             ingrPortionOz: '',
             ingrName: '',
-            mealName: ''
         });
     }
 
@@ -107,9 +107,19 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
 
 
     //Meal Ingredients
-    const [mealIngrs, setIngrs] = useState<Array<MealIngr>>()
+    const [newMeal, setNewMeal] = useState<Meal>(new Meal('', []))
+    const setMealName = (mealName: string) => {
+        var updateMeal = newMeal;
+        updateMeal.name = mealName;
+        setNewMeal(updateMeal);
+    }
 
-
+    const getMealName = () => {
+        return newMeal.name;
+    }
+    const getIngredientList = () => {
+        return newMeal.ingredientList;
+    }
 
 
     // Button click functions
@@ -136,10 +146,13 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
             serv: 0,
             servOz: 0,
         }
+
         var errorCheck = false
         //data type validation
         //TODO maybe format nested ifs better
         //TODO is there a way to do data validation in the form?
+
+        // Checking for empty
         if (formValues.ingrName == '') {
             setFormError({ ...formError, ingrName: 'Name is required' })
             errorCheck = true
@@ -233,11 +246,27 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
 
         if (newIngr.serv != 0 && ingrAmm != 0) {
             var newMealIngr: MealIngr = new MealIngr(newIngr, ingrAmm)
-            if (mealIngrs) {
+            var updateMeal: Meal = new Meal('', []);
 
-                setIngrs([...mealIngrs, newMealIngr])
+            if (newMeal) {
+                updateMeal.ingredientList = getIngredientList();
+                updateMeal.name = getMealName();
+
+                if (newMeal.ingredientList.length > 0) {
+                    //If meal already has ingredients, add to existing list
+                    updateMeal.ingredientList.push(newMealIngr)
+
+                } else {
+                    //If meal has no ingredients, create new list
+                    updateMeal.ingredientList = [newMealIngr]
+                }
+
+
+                setNewMeal(updateMeal)
             } else {
-                setIngrs([newMealIngr])
+                updateMeal.ingredientList.push(newMealIngr);
+
+                setNewMeal(updateMeal)
             }
         }
 
@@ -284,12 +313,16 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
     }
 
     const submitMeal = (e: any) => {
-        if (mealIngrs && formValues.mealName != '') {
-            var newMeal = new Meal(formValues.mealName, mealIngrs)
-            //console.log(newMeal)
+        if (newMeal.name != '' && newMeal.ingredientList.length > 0) {
+
             return onSubmit(newMeal)
         } else {
-            //TODO display error msg
+            if (newMeal.name == '') {
+                //TODO name cant be empty
+            }
+            if (newMeal.ingredientList.length == 0) {
+                //TODO meal must have ingredients
+            }
             return false
         }
 
@@ -300,7 +333,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
         onCancel(e);
     }
 
-    
+
 
 
     //UseEffects
@@ -336,13 +369,11 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                     <DivRow>
 
 
-                        <StyledLabel>
-                            Name
-                        </StyledLabel>
-                        <StyledInput size={formValues.ingrName.length || 1}
+
+                        <StyledInput size={formValues.ingrName.length || 15}
                             type="text"
                             id="name"
-                            placeholder=''
+                            placeholder='Ingredient Name'
                             value={formValues.ingrName}
                             onChange={(e) => setFormValues({ ...formValues, ingrName: e.target.value })}
                             required>
@@ -359,7 +390,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         // Carbs field
                     }
                     <DivRow>
-                        <StyledLabel>
+                        <StyledLabel className='ingrFormLabel'>
                             Carbs
                         </StyledLabel>
                         <StyledInput size={formValues.c.length || 1}
@@ -384,7 +415,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         //fat field 
                     }
                     <DivRow>
-                        <StyledLabel>
+                        <StyledLabel className='ingrFormLabel'>
                             Fat
                         </StyledLabel>
                         <StyledInput size={formValues.f.length || 1}
@@ -404,7 +435,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         //Protein field 
                     }
                     <DivRow>
-                        <StyledLabel >
+                        <StyledLabel className='ingrFormLabel'>
                             Protein
                         </StyledLabel >
                         <StyledInput size={formValues.p.length || 1}
@@ -415,9 +446,10 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                             onChange={(e) => setFormValues({ ...formValues, p: e.target.value })}
                             required>
                         </StyledInput>
-                        <UnitLabel className='unitLabel'>
-                            g
-                        </UnitLabel>
+                        <UnitDropdown>
+                            <option value='g'>g</option>
+                            <option value='oz'>oz</option>
+                        </UnitDropdown>
                     </DivRow>
 
 
@@ -425,7 +457,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         // Serving field
                     }
                     <DivRow>
-                        <StyledLabel className='serv' >
+                        <StyledLabel className='ingrFormLabel' >
                             Serving Size
                         </StyledLabel>
 
@@ -449,7 +481,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         <StyledLabel className='ingrFormCalLabel'>
                             Calories
                         </StyledLabel>
-                        <StyledInput size={formValues.servOz.length || 2}
+                        <StyledInput size={formValues.cal.length || 1}
                             type="text"
                             id="Calories"
                             placeholder=''
@@ -483,10 +515,10 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                                 Cancel
                             </OperationButton>
 
-                        <OperationButton onClick={clearIngrForm}>
+                            <OperationButton onClick={clearIngrForm}>
                                 Clear
                             </OperationButton>
-                            
+
                         </div>
                         :
                         <DivRow>
@@ -495,7 +527,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                             </OperationButton>
 
 
-                            
+
                             {
                                 //TODO Add Save functionality
                             }
@@ -518,23 +550,30 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
             <MealWrapper>
                 <DivRow>
                     <DivRow>
-
-                    </DivRow>
-                    <DivRow>
                         <StyledInput
                             style={{
                                 fontSize: '15px',
-                                maxWidth: '100%',
+
                             }}
-                            size={formValues.mealName.length || 9}
+                        //size={newMeal.name == '' ? 9 : newMeal.name.length }
 
-                            type="text"
-                            id="MealName"
-                            placeholder='Meal Name'
-                            value={formValues.mealName}
-                            onChange={(e) => setFormValues({ ...formValues, mealName: e.target.value })} >
-
+                        //type="text"
+                        //id="MealName"
+                        //placeholder='Meal Name'
+                        //value={formValues.ingrName}
+                        //onChange={(e) => getFontSize(e.target.value )}
+                        >
+                            d
                         </StyledInput>
+                    </DivRow>
+                    <DivRow>
+
+                    </DivRow>
+                    <DivRow>
+                        <StyledLabel>
+                            Totals:
+                        </StyledLabel>
+
                     </DivRow>
                 </DivRow>
                 <DivRow>
@@ -546,7 +585,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
 
                             
 */
-                        mealIngrs?.map((item, index) => (
+                        newMeal.ingredientList?.map((item, index) => (
 
                             <MealIngrItem key={index}>
                                 <MealIngrButtonWrapper>
@@ -555,11 +594,22 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                                     <MealIngrButton > </MealIngrButton>
                                     <MealIngrButton > </MealIngrButton>
                                 </MealIngrButtonWrapper>
-                                <StyledLabel style={{
-                                    fontSize: '20px'
-                                }}>
-                                    {item.amm}g of {item.ingr.name}: {item.ingr.cal} cals {item.ingr.p}g P
-                                </StyledLabel>
+                                <div>
+                                    <div>
+                                        <StyledLabel style={{
+                                            fontSize: '20px'
+                                        }}>
+                                            {item.amm}g of {item.ingr.name}
+                                        </StyledLabel>
+                                    </div>
+                                    <div>
+                                        <StyledLabel style={{
+                                            fontSize: '20px'
+                                        }}>
+                                            {item.ingr.p}g P {item.ingr.cal} cals
+                                        </StyledLabel>
+                                    </div>
+                                </div>
                             </MealIngrItem>
 
                         ))
@@ -619,6 +669,7 @@ const MealIngrItem = styled.div`
 const MealIngrButton = styled.button`
     width: 1vw;
     height: 2vh;
+    padding: 2vh 0 2vh 0;
     `
 
 const MealWrapper = styled.div`
@@ -634,7 +685,8 @@ const MainWrapper = styled.div`
 `
 const MealIngrButtonWrapper = styled.div`
     display: flex;
-    flex-direction: column;`
+    flex-direction: column;
+    `
 
 const OperationButton = styled.button`
     
