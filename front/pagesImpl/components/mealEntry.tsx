@@ -563,7 +563,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         //value={formValues.ingrName}
                         //onChange={(e) => getFontSize(e.target.value )}
                         >
-                            d
+                            
                         </StyledInput>
                     </DivRow>
                     <DivRow>
