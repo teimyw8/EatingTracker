@@ -6,7 +6,8 @@ import {
     GtoOZ,
     Fcal,
     Ccal,
-    getFontSize
+    getFontSize,
+    StyledInput
 } from './commonTypes'
 import { get } from 'http';
 
@@ -15,6 +16,9 @@ interface errorEntry {
     msg: string
 }
 
+//TODO fix label font size
+// fix meal ingr button 
+// 
 
 
 interface MealEntryProp {
@@ -122,15 +126,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
     }
 
 
-    // Button click functions
-    const [addIngrClicked, setAddIngrClicked] = useState(false)
 
-    const clickAddIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setAddIngrClicked(true)
-    }
-    const cancelAddIngr = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setAddIngrClicked(false)
-    }
 
 
 
@@ -306,9 +302,6 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
         clearFormValues()
         //Clear form errors
         clearFormErrors()
-        setAddIngrClicked(false);
-        //console.log('clear end')
-        // console.log(formValues)
         e.preventDefault()
     }
 
@@ -405,11 +398,6 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                             g
                         </UnitLabel>
                     </DivRow>
-                    <DivRow>
-                        <StyledError>
-                            {formError.ingrName}
-                        </StyledError>
-                    </DivRow>
 
                     {
                         //fat field 
@@ -490,8 +478,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                         >
                         </StyledInput>
                     </DivRow>
-                    {addIngrClicked
-                        ?
+                    
                         <div>
                             <DivRow>
                                 <StyledLabel className='serv'> Amount  </StyledLabel>
@@ -511,34 +498,20 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                             <OperationButton type='submit' onClick={submitAddIngr}>
                                 Add
                             </OperationButton>
-                            <OperationButton type='submit' onClick={cancelAddIngr}>
-                                Cancel
-                            </OperationButton>
-
-                            <OperationButton onClick={clearIngrForm}>
-                                Clear
-                            </OperationButton>
-
-                        </div>
-                        :
-                        <DivRow>
-                            <OperationButton type='submit' onClick={clickAddIngr}>
-                                Add
-                            </OperationButton>
-
-
-
-                            {
-                                //TODO Add Save functionality
-                            }
                             <OperationButton>
                                 Save
                             </OperationButton>
                             <OperationButton onClick={clearIngrForm}>
                                 Clear
                             </OperationButton>
-                        </DivRow>
-                    }
+
+                        </div>
+                      
+
+
+
+                            
+                    
 
                 </form>
 
@@ -668,7 +641,7 @@ const MealIngrItem = styled.div`
 
 const MealIngrButton = styled.button`
     width: 1vw;
-    height: 2vh;
+    height: 1vh;
     padding: 2vh 0 2vh 0;
     `
 
@@ -699,20 +672,11 @@ const OperationButton = styled.button`
   text-align: center;
   font-size: 15px;
   margin: 1vh 1vw 1vh 1vw; 
-  padding: 0 1vw 0 1vw; 
   border-radius: 5px
   
 `
 
-const StyledInput = styled.input`
 
-    margin: 1%;
-    padding: 1%;
-    border-radius: 5px;
-    flex: 1;
-
-
-`
 
 const SearchInput = styled.input`
 

@@ -1,20 +1,65 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react'
+import { DisplayableItem, Meal, StyledInput} from './commonTypes'
 
-const ProspectList = (): React.JSX.Element => {
+
+interface MealEntryProp {
+    onEdit: (index: number, newMeal: Meal) => boolean;
+    onEat: (index:number, amm:number) => boolean;
+    onDelete: (index:number) => boolean;
+    listToDisplay : Array<DisplayableItem>;
+
+}
+
+interface ClickedMealProps {
+
+    displayItem: DisplayableItem,
+    editClick: ( index: number, newMeal: Meal) => boolean,
+    deleteClick: ( index: number) => boolean,
+    eatClick: (index: number, ammEaten: number) => boolean,
+    index: number,
+  
+  }
+
+interface UnclickedMealProps {
+    item : DisplayableItem,
+    onClick: (index: number) => boolean,
+    index: number,
+
+}
+
+const ProspectList = ( {listToDisplay, onEdit, onEat, onDelete} : MealEntryProp ): React.JSX.Element => {
     //TODO ALL
     //Pass meals in as props
     //Pass edit click 
     //Pass delete click 
     //Pass eatClick
     //Do clickedMeal handling here
+
+      const [displayList, setDisplayList] = useState(listToDisplay)
+    
+      const [clickedMeal, setClickedMeal] = useState(-1);
+      const clickMeal = (index: number) => {
+        if (displayList) {
+          var newMeals = displayList
+    
+          newMeals[index].isClicked = true
+          if (clickedMeal >= 0)
+            newMeals[clickedMeal].isClicked = false
+    
+          setDisplayList([...newMeals])
+          setClickedMeal(index)
+        }
+        return true;
+      };
+    
     return (
         <>
-            {meals.map((item, index) => (
+            {listToDisplay.map((item, index) => (
                 item.isClicked ?
-                    <ClickedMeal key={index} onClick={editMeal} deleteClick={deleteMeal} eatClick={eatMeal} name={item.name} carbs={String(item.carbs)} fat={String(item.fat)} protein={String(item.protein)} portion={String(item.portion)} index={index}></ClickedMeal>
+                    <ClickedMeal key={index} editClick={onEdit} deleteClick={onDelete} eatClick={onEat} displayItem={item} index={index}></ClickedMeal>
                     :
-                    <UnclickedMeal key={index} onClick={clickMeal} name={item.name} index={index}></UnclickedMeal>
+                    <UnclickedMeal key={index} onClick={clickMeal} item={item} index={index}></UnclickedMeal>
             ))}
 
         </>
@@ -23,17 +68,13 @@ const ProspectList = (): React.JSX.Element => {
 
 //Classes
 
-const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClick, carbs, fat, protein, name, index, portion }) => {
+const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, displayItem }) => {
     const [nameDisplay, setNameDisplay] = useState(String(name));
-    const [editClick, setEditClick] = useState(false);
+    const [editClicked, setEditClicked] = useState(false);
     const [deleteClicked, setDeleteClicked] = useState(false);
     const [eatError, setEatError] = useState(false)
 
-    const [editCarbs, setCarbs] = useState(String(carbs));
-    const [editFat, setFat] = useState(String(fat));
-    const [editProtein, setProtein] = useState(String(protein));
-    const [editPortion, setPortion] = useState(String(portion));
-    const [editPortionOZ, setPortionOZ] = useState(String(Number(portion) * 30));
+
     const [eatClicked, setEatClicked] = useState(false)
 
     const [eatPortion, setEatPortion] = useState('');
@@ -41,24 +82,24 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
     const [eatMeal, setEatMeal] = useState<Meal>();
 
     const clickEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setEditClick(true)
+        setEatClicked(true)
         setEatClicked(false)
     }
-    const clickCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setEditClick(false)
+    const editClickCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setEatClicked(false)
     }
     const submitMeal = () => {
 
     }
 
-    const setEatClickF = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const EatClickF = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setEatClicked(false)
     }
-    const setEatClickT = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const setEatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setEatClicked(true)
-        setEditClick(false)
+        setEditClicked(false)
     }
 
     //TODO
@@ -115,7 +156,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
 
                     <DivCellRight>
                         <EditFormWrapper>
-                            {editClick ?
+                            {editClicked ?
                                 <form onSubmit={submitMeal}>
                                     <StyledLabel >
                                         Carbs:
@@ -255,7 +296,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ onClick, eatClick, deleteClic
     );
 };
 
-const UnclickedMeal: React.FC<MealProps> = ({ onClick, name, index }) => {
+const UnclickedMeal: React.FC<UnclickedMealProps> = ({ onClick, item, index }) => {
     const [nameDisplay, setNameDisplay] = useState(String(name));
     //const [carbsDisplay, setCarbs] = useState(carbs.toString);
 

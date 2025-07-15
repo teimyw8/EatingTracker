@@ -5,7 +5,6 @@ import CurrentDay from './components/currentDay';
 import MealEntry from './components/mealEntry';
 import { EatenEntry, Ingredient, Meal, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
 //TODO 
-//ADD MEAL
 //EAT MEAL
 //EATEN TOTAL
 export interface SearchDisplayListProps {
@@ -16,15 +15,7 @@ export interface SearchDisplayListProps {
 
 }
 
-interface ClickedMealProps {
 
-  meal: Meal,
-  editClick: ( index: number, newMeal: Meal) => boolean,
-  deleteClick: ( index: number) => boolean,
-  eatClick: (index: number, ammEaten: number) => boolean,
-  index: number,
-
-}
 
 //prob rename this TODO
 interface MealProps {
@@ -33,6 +24,7 @@ interface MealProps {
   onClick: (index: number) => void,
   index: number
 }
+
 interface DisplayListProps {
 
 }
@@ -267,7 +259,7 @@ const SearchDisplayList: React.FC<SearchDisplayListProps> = ({ items, deleteClic
 
 }
 
-const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, meal, index }) => {
+const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, meal, index,  }) => {
   const [nameDisplay, setNameDisplay] = useState(String(meal.name));
   const [editClicked, setEditClicked] = useState(false);
   const [deleteClicked, setDeleteClicked] = useState(false);
@@ -486,7 +478,7 @@ const LeftSide = styled.div`
 
 height: auto;
 min-height: 40vh;
-width: 44vw;
+width: 34vw;
 margin: 2vw;
 padding: 1vh;
 background: #6e13b0;
@@ -500,16 +492,16 @@ border-radius: 40px;
 const RightSide = styled.div`
 
 height: auto;
-width: 44vw;
+width: 54vw;
 margin: 2vw;
 padding: 1vh;
 background: #6e13b0;
 background-size: auto;
 float:right;
-clip-path: polygon(2% 0, 98% 0, 100% 20%, 100% 80%, 98% 100%, 2% 100%, 0 80%, 0 20%);
 border-radius: 40px;
 
 `
+//clip-path: polygon(2% 0, 98% 0, 100% 20%, 100% 80%, 98% 100%, 2% 100%, 0 80%, 0 20%);
 
 const DivTable = styled.div`
 
@@ -598,7 +590,7 @@ border-radius: 5px;
 `
 
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
 
 margin: 1vw;
 padding: 2px;

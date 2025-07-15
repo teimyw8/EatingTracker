@@ -85,14 +85,34 @@ export interface EatenEntry {
     editClicked: boolean;
 }
 
-
-export interface Displayable{
+//IF type == MEAL(1) 
+export interface DisplayableItem{
     type: DisplayListType;
-    name: string;
-    ingrList : MealIngr[];
+    meal: Meal;
+    ingr: Ingredient
     isClicked: boolean;    
+    portion: number;
+    portionUnit: MeasuringUnit;
+}
+
+export class MeasuringUnit{
+    private measuringUnitType : MeasuringUnitType;
+
+
+    constructor(measuringUnitType : MeasuringUnitType) {    
+        this.measuringUnitType = measuringUnitType ;
+    }   
 
 }
+
+export enum MeasuringUnitType{
+    OZ = "OZ",
+    G = "G",
+    LB = "LB",
+
+}
+
+
 export enum DisplayListType {
     MEAL = 1,
     INGR = 2
@@ -122,5 +142,15 @@ justify-content: start;
 `
 
 export const StyledListItem = styled.li`
+
+`
+
+export const StyledInput = styled.input`
+
+    margin: 1%;
+    padding: 1%;
+    border-radius: 5px;
+    flex: 1;
+
 
 `
