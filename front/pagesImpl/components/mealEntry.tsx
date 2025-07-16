@@ -7,7 +7,9 @@ import {
     Fcal,
     Ccal,
     getFontSize,
-    StyledInput
+    StyledInput,
+    OperationButton,
+    StyledLabel
 } from './commonTypes'
 import { get } from 'http';
 
@@ -661,20 +663,7 @@ const MealIngrButtonWrapper = styled.div`
     flex-direction: column;
     `
 
-const OperationButton = styled.button`
-    
-  
-  width: fit-content;
-  height: fit-content;
-  background-color: #b1b3b5;
-  border: none;
-  margin: 2px;
-  text-align: center;
-  font-size: 15px;
-  margin: 1vh 1vw 1vh 1vw; 
-  border-radius: 5px
-  
-`
+
 
 
 
@@ -682,18 +671,6 @@ const SearchInput = styled.input`
 
     border-radius: 2px;
 
-`
-/*
-    float: right;
-    */
-const StyledLabel = styled.label`
-    font-size: 25px;
-    display: inline-block;
-    height: 1vh;
-    width: fit-content;
-    min-width: 90px;
-    padding: 0 1vw 0 1vw; 
-    border-radius: 5px;
 `
 
 const UnitLabel = styled.label`

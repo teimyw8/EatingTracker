@@ -90,9 +90,7 @@ export interface DisplayableItem{
     type: DisplayListType;
     meal: Meal;
     ingr: Ingredient
-    isClicked: boolean;    
-    portion: number;
-    portionUnit: MeasuringUnit;
+    isClicked: boolean;
 }
 
 export class MeasuringUnit{
@@ -103,6 +101,14 @@ export class MeasuringUnit{
         this.measuringUnitType = measuringUnitType ;
     }   
 
+    toG(){
+         if (this.measuringUnitType == MeasuringUnitType.OZ) {
+            return 28.3495;
+        } else if (this.measuringUnitType == MeasuringUnitType.LB) {
+            return 453.592;
+        }
+        return 1;
+    }
 }
 
 export enum MeasuringUnitType{
@@ -153,4 +159,27 @@ export const StyledInput = styled.input`
     flex: 1;
 
 
+`
+export const StyledLabel = styled.label`
+    font-size: 25px;
+    display: inline-block;
+    height: 1vh;
+    width: fit-content;
+    min-width: 90px;
+    padding: 0 1vw 0 1vw; 
+    border-radius: 5px;
+`
+export const OperationButton = styled.button`
+    
+  
+  width: fit-content;
+  height: fit-content;
+  background-color: #b1b3b5;
+  border: none;
+  margin: 2px;
+  text-align: center;
+  font-size: 15px;
+  margin: 1vh 1vw 1vh 1vw; 
+  border-radius: 5px
+  
 `

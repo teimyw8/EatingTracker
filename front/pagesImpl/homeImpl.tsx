@@ -579,17 +579,6 @@ border-radius: 5px
 
 
 
-const StyledLabel = styled.label`
-
-height: 2vh;
-width: fit-content;
-margin: 2vw;
-padding: 2px;
-
-border-radius: 5px;
-`
-
-
 export const StyledInput = styled.input`
 
 margin: 1vw;

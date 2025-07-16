@@ -1,34 +1,34 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react'
-import { DisplayableItem, Meal, StyledInput} from './commonTypes'
+import { DisplayableItem, Meal, MeasuringUnit, OperationButton, StyledInput, StyledLabel } from './commonTypes'
 
 
 interface MealEntryProp {
     onEdit: (index: number, newMeal: Meal) => boolean;
-    onEat: (index:number, amm:number) => boolean;
-    onDelete: (index:number) => boolean;
-    listToDisplay : Array<DisplayableItem>;
+    onEat: (index: number, amm: number) => boolean;
+    onDelete: (index: number) => boolean;
+    listToDisplay: Array<DisplayableItem>;
 
 }
 
 interface ClickedMealProps {
 
     displayItem: DisplayableItem,
-    editClick: ( index: number, newMeal: Meal) => boolean,
-    deleteClick: ( index: number) => boolean,
+    editClick: (index: number, newMeal: Meal) => boolean,
+    deleteClick: (index: number) => boolean,
     eatClick: (index: number, ammEaten: number) => boolean,
     index: number,
-  
-  }
+
+}
 
 interface UnclickedMealProps {
-    item : DisplayableItem,
+    item: DisplayableItem,
     onClick: (index: number) => boolean,
     index: number,
 
 }
 
-const ProspectList = ( {listToDisplay, onEdit, onEat, onDelete} : MealEntryProp ): React.JSX.Element => {
+const ProspectList = ({ listToDisplay, onEdit, onEat, onDelete }: MealEntryProp): React.JSX.Element => {
     //TODO ALL
     //Pass meals in as props
     //Pass edit click 
@@ -36,23 +36,23 @@ const ProspectList = ( {listToDisplay, onEdit, onEat, onDelete} : MealEntryProp 
     //Pass eatClick
     //Do clickedMeal handling here
 
-      const [displayList, setDisplayList] = useState(listToDisplay)
-    
-      const [clickedMeal, setClickedMeal] = useState(-1);
-      const clickMeal = (index: number) => {
+    const [displayList, setDisplayList] = useState(listToDisplay)
+
+    const [clickedMeal, setClickedMeal] = useState(-1);
+    const clickMeal = (index: number) => {
         if (displayList) {
-          var newMeals = displayList
-    
-          newMeals[index].isClicked = true
-          if (clickedMeal >= 0)
-            newMeals[clickedMeal].isClicked = false
-    
-          setDisplayList([...newMeals])
-          setClickedMeal(index)
+            var newMeals = displayList
+
+            newMeals[index].isClicked = true
+            if (clickedMeal >= 0)
+                newMeals[clickedMeal].isClicked = false
+
+            setDisplayList([...newMeals])
+            setClickedMeal(index)
         }
         return true;
-      };
-    
+    };
+
     return (
         <>
             {listToDisplay.map((item, index) => (
@@ -68,7 +68,7 @@ const ProspectList = ( {listToDisplay, onEdit, onEat, onDelete} : MealEntryProp 
 
 //Classes
 
-const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, displayItem }) => {
+const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, displayItem, index }) => {
     const [nameDisplay, setNameDisplay] = useState(String(name));
     const [editClicked, setEditClicked] = useState(false);
     const [deleteClicked, setDeleteClicked] = useState(false);
@@ -92,7 +92,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 
     }
 
-    const EatClickF = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const EatClickCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setEatClicked(false)
     }
@@ -105,28 +105,28 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
     //TODO
     //Validate serving is number and check which unit is being used
     //If serving not number show message
-    const eatSubmit = (e: any, index: number, serving: string, servingOZ: string) => {
+    const eatSubmit = (e: any, index: number, amm: string, unit: MeasuringUnit) => {
+
         setEatClicked(false)
-        var numberval = false;
-        if (serving) {
-            if (Number.isNaN(serving)) {
 
-            }
-        } else if (servingOZ) {
-            if (Number.isNaN(servingOZ)) {
+        if (Number.isNaN(amm)) {
 
-            }
+        } else {
+            var ammInG = Number(amm) * unit.toG();
+
+            eatClick(index, Number(amm) * unit.toG())
 
         }
-        eatClick(e, index, Number(serving))
     }
 
+    /*
     const editSubmit = (e: any, whichMeal: number, newCarbs: string,
         newFat: string, newProtein: string, newPortion: string
     ) => {
-        setEditClick(false)
+        setEditClicked(false)
         onClick(e, index, newCarbs, newFat, newProtein, newPortion)
     }
+        */
 
     // const [carbsDisplay, setCarbs] = useState(carbs.toString);
 
@@ -147,16 +147,19 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 
 
                     <DivCell>
-                        <OperationButton onClick={setEatClickT}>Eat</OperationButton>
+                        <OperationButton onClick={setEatClick}>Eat</OperationButton>
                         <div></div>
                         <OperationButton onClick={clickEdit}>Edit</OperationButton>
                         <div></div>
-                        <OperationButton onClick={(e: any) => deleteClick(e, index)} >Delete</OperationButton>
+                        <OperationButton onClick={(e: any) => deleteClick( index)} >Delete</OperationButton>
                     </DivCell>
 
                     <DivCellRight>
-                        <EditFormWrapper>
-                            {editClicked ?
+                        <div>
+                            {
+                            editClicked ?
+                            <div></div>
+                            /*
                                 <form onSubmit={submitMeal}>
                                     <StyledLabel >
                                         Carbs:
@@ -232,6 +235,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
                                         </OperationButton>
                                     </DivRow>
                                 </form>
+                                */
                                 :
                                 eatClicked
                                     ?
@@ -262,7 +266,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
                                             </label>
                                         </form>
                                         <OperationButton onClick={(e: any) => eatSubmit(e, index, eatPortion, eatPortionOZ)}>Submit</OperationButton>
-                                        <OperationButton onClick={setEatClickF} >Cancel</OperationButton>
+                                        <OperationButton onClick={EatClickCancel} >Cancel</OperationButton>
                                         {eatError
                                             ? <div>
                                                 Serving should be only numbers
@@ -278,7 +282,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 
                                     </div>
                             }
-                        </EditFormWrapper>
+                        </div>
                     </DivCellRight>
                 </DivRow>
             </DivTable>
