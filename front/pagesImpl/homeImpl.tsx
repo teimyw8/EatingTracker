@@ -3,12 +3,13 @@ import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } 
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
 import MealEntry from './components/mealEntry';
-import { EatenEntry, Ingredient, Meal, MealIngr, Displayable, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
+import { EatenEntry, Ingredient, Meal, MealIngr, DisplayableItem, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
+import ProspectList from './components/prospectList';
 //TODO 
 //EAT MEAL
 //EATEN TOTAL
 export interface SearchDisplayListProps {
-  items: Array<Displayable>;
+  items: Array<DisplayableItem>;
   editClick: ( index: number, newMeal: Meal) => boolean,
   deleteClick: ( index: number) => boolean,
   eatClick: ( index: number, ammEaten: number) => boolean,
@@ -25,9 +26,6 @@ interface MealProps {
   index: number
 }
 
-interface DisplayListProps {
-
-}
 
 export default function Home() {
 
@@ -52,14 +50,14 @@ export default function Home() {
 
   }
 
-  const [mealDisplayList, setMealDisplayList] = useState<Array<Displayable>>()
+  const [mealDisplayList, setMealDisplayList] = useState<Array<DisplayableItem>>([])
   const [updateDisplayList,setUpdateDisplayList] = useState(0)
 
   const updateMealDisplayList = (newMeals: Array<Meal>) => {
     console.log(newMeals)
-    var newDisplayList: Array<Displayable> = new Array();
+    var newDisplayList: Array<DisplayableItem> = new Array();
     newMeals.forEach(element => {
-      newDisplayList.push({ ingrList: element.ingredientList, type: DisplayListType.MEAL, name: element.name, isClicked: false })
+      newDisplayList.push({ meal: element, ingr: null, type: DisplayListType.MEAL, isClicked: false })
     });
       
     setMealDisplayList(newDisplayList)
@@ -212,18 +210,11 @@ export default function Home() {
 
         }
       </DivRow>
-      {mealDisplayList ?
-        <SearchDisplayList key={updateDisplayList} items={mealDisplayList} editClick={editMeal} eatClick={eatMeal} deleteClick={deleteMeal}>
+        
+        <ProspectList listToDisplay={mealDisplayList} onDelete={deleteMeal} onEat={eatMeal} onEdit={editMeal}/>  
 
-        </SearchDisplayList>
-        :
-        <DivTable>
-        </DivTable >
-      }
+</RightSide>
 
-
-
-    </RightSide>
   </MainDiv>
 }
 //Classes
@@ -249,16 +240,13 @@ const SearchDisplayList: React.FC<SearchDisplayListProps> = ({ items, deleteClic
   return (
     <>
       {displayList.map((item, index) => (
-        item.isClicked ?
-          <ClickedMeal key={index} editClick={editClick} deleteClick={deleteClick} eatClick={eatClick} meal={new Meal(item.name, item.ingrList)} index={index}></ClickedMeal>
-          :
-          <UnclickedMeal key={index} onClick={clickMeal} name={item.name} index={index}></UnclickedMeal>
+        <div></div>
       ))}
     </>
   )
 
 }
-
+/*
 const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, meal, index,  }) => {
   const [nameDisplay, setNameDisplay] = useState(String(meal.name));
   const [editClicked, setEditClicked] = useState(false);
@@ -463,7 +451,7 @@ const UnclickedMeal: React.FC<MealProps> = ({ onClick, name, index }) => {
     </DivRow>
   );
 };
-
+*/
 
 // divs
 const MainDiv = styled.div`

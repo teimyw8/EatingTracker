@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react'
-import { DisplayableItem, Meal, MeasuringUnit, OperationButton, StyledInput, StyledLabel } from './commonTypes'
+import { DisplayableItem, Meal, Measurement, MeasuringUnitType, OperationButton, StyledInput, StyledLabel } from './commonTypes'
 
 
-interface MealEntryProp {
+interface ProspectListProps {
     onEdit: (index: number, newMeal: Meal) => boolean;
     onEat: (index: number, amm: number) => boolean;
     onDelete: (index: number) => boolean;
@@ -28,7 +28,7 @@ interface UnclickedMealProps {
 
 }
 
-const ProspectList = ({ listToDisplay, onEdit, onEat, onDelete }: MealEntryProp): React.JSX.Element => {
+const ProspectList = ({ listToDisplay, onEdit, onEat, onDelete }: ProspectListProps): React.JSX.Element => {
     //TODO ALL
     //Pass meals in as props
     //Pass edit click 
@@ -77,8 +77,8 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 
     const [eatClicked, setEatClicked] = useState(false)
 
-    const [eatPortion, setEatPortion] = useState('');
-    const [eatPortionOZ, setEatPortionOZ] = useState('');
+    const [ammToEat, setAmmToEat] = useState('');
+    const [ammUnit, setAmmUnit] = useState<MeasuringUnitType>(MeasuringUnitType.G);
     const [eatMeal, setEatMeal] = useState<Meal>();
 
     const clickEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -105,16 +105,16 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
     //TODO
     //Validate serving is number and check which unit is being used
     //If serving not number show message
-    const eatSubmit = (e: any, index: number, amm: string, unit: MeasuringUnit) => {
+    const eatSubmit = (e: any, index: number, ammString: string, unit: MeasuringUnitType) => {
 
         setEatClicked(false)
 
-        if (Number.isNaN(amm)) {
+        if (Number.isNaN(ammString)) {
 
         } else {
-            var ammInG = Number(amm) * unit.toG();
+            var amm = new Measurement(Number(ammString), unit) ;
 
-            eatClick(index, Number(amm) * unit.toG())
+            eatClick(index, amm.getValueInG())
 
         }
     }
@@ -242,37 +242,27 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
                                     <DivCell>
                                         <form>
 
-                                            <StyledInput size={eatPortion.length || 1}
+                                            <StyledInput size={ammToEat.length || 1}
                                                 type="text"
                                                 id="name"
                                                 placeholder=''
-                                                value={eatPortion}
-                                                onChange={(e) => setEatPortion(e.target.value)}
+                                                value={ammToEat}
+                                                onChange={(e) => setAmmToEat(e.target.value)}
                                                 required>
                                             </StyledInput>
                                             <label>
                                                 g
                                             </label>
-                                            <StyledInput size={eatPortion.length || 1}
-                                                type="text"
-                                                id="name"
-                                                placeholder=''
-                                                value={eatPortionOZ}
-                                                onChange={(e) => setEatPortionOZ(e.target.value)}
-                                                required>
-                                            </StyledInput>
-                                            <label>
-                                                oz
-                                            </label>
+                                            
                                         </form>
-                                        <OperationButton onClick={(e: any) => eatSubmit(e, index, eatPortion, eatPortionOZ)}>Submit</OperationButton>
+                                        <OperationButton onClick={(e: any) => eatSubmit(e, index, ammToEat, ammUnit)}>Submit</OperationButton>
                                         <OperationButton onClick={EatClickCancel} >Cancel</OperationButton>
                                         {eatError
                                             ? <div>
                                                 Serving should be only numbers
                                             </div>
                                             :
-                                            <div>
+                                            <div> 
 
                                             </div>}
                                     </DivCell>

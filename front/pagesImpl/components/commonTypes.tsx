@@ -88,26 +88,28 @@ export interface EatenEntry {
 //IF type == MEAL(1) 
 export interface DisplayableItem{
     type: DisplayListType;
-    meal: Meal;
-    ingr: Ingredient
+    meal: Meal | null;
+    ingr: Ingredient | null;
     isClicked: boolean;
 }
 
-export class MeasuringUnit{
-    private measuringUnitType : MeasuringUnitType;
+export class Measurement{
+    private measuringUnit : MeasuringUnitType;
+    private value : number;
 
 
-    constructor(measuringUnitType : MeasuringUnitType) {    
-        this.measuringUnitType = measuringUnitType ;
-    }   
+    constructor(value : number, measuringUnit : MeasuringUnitType, ) {    
+        this.measuringUnit = measuringUnit ;
+        this.value = value;
+    }  
 
-    toG(){
-         if (this.measuringUnitType == MeasuringUnitType.OZ) {
-            return 28.3495;
-        } else if (this.measuringUnitType == MeasuringUnitType.LB) {
-            return 453.592;
+    getValueInG(){
+         if (this.measuringUnit == MeasuringUnitType.OZ) {
+            return 28.3495 * this.value;
+        } else if (this.measuringUnit == MeasuringUnitType.LB) {
+            return 453.592 * this.value;
         }
-        return 1;
+        return this.value;
     }
 }
 
