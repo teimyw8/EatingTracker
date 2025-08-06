@@ -1,22 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DisplayableItem, Meal } from '../../pagesImpl/components/commonTypes'
+import { DisplayableItem, EatenItem, Meal } from '../../pagesImpl/components/commonTypes'
 
 
 
 
 
-export interface ProspectListState {
-  list: Array<DisplayableItem>
+export interface CurrentDayState {
+  list: Array<EatenItem>
 }
 
-const initialState= (): ProspectListState => {
+const initialState= (): CurrentDayState => {
   return {
     list: [],
   }
 }
 
-export const prospectListSlice = createSlice({
-  name: 'prospectList',
+export const currentDaySlice = createSlice({
+  name: 'currentDay',
   initialState: initialState(),
   reducers: {
     edit: (state, action) => {
@@ -34,7 +34,7 @@ export const prospectListSlice = createSlice({
     
     add: (state, action) => {
 
-      const item: DisplayableItem = action.payload.item;
+      const item: EatenItem = action.payload.item;
       state.list.push(item);
     },
 
@@ -42,12 +42,12 @@ export const prospectListSlice = createSlice({
 
       const index = action.payload.index;
       const toDelete = state.list[index];
-      state.list = state.list.filter((item: DisplayableItem) => item !== toDelete);
+      state.list = state.list.filter((item: EatenItem) => item !== toDelete);
     },
   },
 })
 
 
-export const { edit, add, del } = prospectListSlice.actions;
+export const { edit, add, del } = currentDaySlice.actions;
 
-export default prospectListSlice.reducer
+export default currentDaySlice.reducer

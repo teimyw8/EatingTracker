@@ -1,4 +1,7 @@
 import styled from '@emotion/styled'
+
+export const apiBaseUri = 'http://localhost:8080'
+
 export interface Ingredient{
     name: string;
     cal: number | undefined;
@@ -7,6 +10,13 @@ export interface Ingredient{
     f: number | undefined;
     serv: number;
     servOz: number | undefined;
+}
+
+export enum ApiCallStatus {
+    IDLE = 'idle',
+    LOADING = 'loading',
+    SUCCEEDED = 'succeeded',
+    FAILED = 'failed'
 }
 
 //TODO Make MealIngr into a class;
@@ -35,12 +45,14 @@ export class MealIngr {
 
 export class Meal {
     name :string
+    id: string
     ingredientList : Array<MealIngr>
    
     
-    constructor(name :string, ingredientList : Array<MealIngr> ) {
+    constructor(name :string, ingredientList : Array<MealIngr>, id: string = "") {
         this.name = name,
         this.ingredientList = ingredientList
+        this.id = id
     }
     totalCal(){
         var sumCal : number = 0;
@@ -77,12 +89,10 @@ export class Meal {
     }
 }
 
-export interface EatenEntry {
-    name: string;
-    cal: number;
-    p: number;
-    servings: number;   
-    editClicked: boolean;
+export interface EatenItem {
+    item: DisplayableItem
+    amm: number;   
+    
 }
 
 //IF type == MEAL(1) 
