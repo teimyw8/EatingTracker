@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DisplayableItem, Meal, Measurement, MeasuringUnitType, OperationButton, StyledInput, StyledLabel } from './commonTypes'
+import { useDispatch } from 'react-redux';
+import { click } from '../../redux/slices/prospectListSlice';
 
 
 interface ProspectListProps {
@@ -38,17 +40,19 @@ const ProspectList = ({ listToDisplay, onEdit, onEat, onDelete }: ProspectListPr
 
     const [displayList, setDisplayList] = useState(listToDisplay)
 
-    const [clickedMeal, setClickedMeal] = useState(-1);
+    const dispatch = useDispatch();
+
+    const [clickedItem, setClickedItem] = useState(-1);
     const clickMeal = (index: number) => {
         if (displayList) {
             var newMeals = displayList
 
-            newMeals[index].isClicked = true
-            if (clickedMeal >= 0)
-                newMeals[clickedMeal].isClicked = false
+            dispatch( click({ index: index }) );
 
-            setDisplayList([...newMeals])
-            setClickedMeal(index)
+            if (clickedItem >= 0)
+                dispatch( click({ index: clickedItem }) );
+            
+            setClickedItem(index)
         }
         return true;
     };
@@ -69,7 +73,14 @@ const ProspectList = ({ listToDisplay, onEdit, onEat, onDelete }: ProspectListPr
 //Classes
 
 const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteClick, displayItem, index }) => {
-    const [nameDisplay, setNameDisplay] = useState(String(name));
+    const itemName = displayItem.type === 2 ? 
+        displayItem.ingr ? 
+            displayItem.ingr.name :
+             "" 
+        : 
+        displayItem.meal ? 
+            displayItem.meal.name :
+             "";
     const [editClicked, setEditClicked] = useState(false);
     const [deleteClicked, setDeleteClicked] = useState(false);
     const [eatError, setEatError] = useState(false)
@@ -142,7 +153,7 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 
 
                     <DivCell>
-                        <h2>{nameDisplay}</h2>
+                        <h2>{itemName}</h2>
                     </DivCell>
 
 
@@ -291,10 +302,18 @@ const ClickedMeal: React.FC<ClickedMealProps> = ({ editClick, eatClick, deleteCl
 };
 
 const UnclickedMeal: React.FC<UnclickedMealProps> = ({ onClick, item, index }) => {
-    const [nameDisplay, setNameDisplay] = useState(String(name));
+    const [nameDisplay, setNameDisplay] = useState('');
     //const [carbsDisplay, setCarbs] = useState(carbs.toString);
 
-
+useEffect(() => {
+        if(item.type === 2) {
+            if(item.ingr)
+            setNameDisplay(item.ingr.name);
+        } else if(item.type === 1) {
+            if(item.meal)
+            setNameDisplay(item.meal.name);
+        }
+    }, [item]);
     return (
 
         <DivRow >

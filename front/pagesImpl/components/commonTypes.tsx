@@ -1,6 +1,14 @@
 import styled from '@emotion/styled'
+import axios from 'axios';
 
 export const apiBaseUri = 'http://localhost:8080'
+export const commonAxios = axios.create({
+    baseURL: apiBaseUri,
+    headers: {  
+        'Access-Control-Allow-Origin' :  '*',
+        'Content-Type': 'application/json'
+    }
+})
 
 export interface Ingredient{
     name: string;

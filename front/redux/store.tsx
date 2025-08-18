@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
 import { prospectListSlice } from './slices/prospectListSlice'
+import { CombinedReducerState } from './root/root.reducer'
 
 export default configureStore({
   reducer: {
@@ -7,3 +8,11 @@ export default configureStore({
 
   },
 })
+
+export type RootState = CombinedReducerState
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>

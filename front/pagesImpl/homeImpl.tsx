@@ -3,8 +3,12 @@ import React, { ButtonHTMLAttributes, Component, DetailedHTMLProps, useEffect } 
 import { useState } from 'react';
 import CurrentDay from './components/currentDay';
 import MealEntry from './components/mealEntry';
-import { EatenEntry, Ingredient, Meal, MealIngr, DisplayableItem, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
+import { EatenItem, Ingredient, Meal, MealIngr, DisplayableItem, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
 import ProspectList from './components/prospectList';
+import { get } from 'http';
+import { getProspectList } from '../redux/thunks/prospectList.thunk';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { selectList } from '../redux/slices/prospectListSlice';
 //TODO 
 //EAT MEAL
 //EATEN TOTAL
@@ -29,6 +33,8 @@ interface MealProps {
 
 export default function Home() {
 
+  const dispatch = useAppDispatch();
+
 
   const [addName, setAddName] = useState('');
   const [addCarbs, setAddCarbs] = useState('');
@@ -37,7 +43,7 @@ export default function Home() {
   const [addPortion, setAddPortion] = useState('');
   const [addPortionOZ, setAddPortionOZ] = useState('');
 
-  const [eatenList, setEatenList] = useState<Array<EatenEntry>>();
+  const [eatenList, setEatenList] = useState<Array<EatenItem>>();
   const [currentDay, setCurrentDay] = useState(new Date());
   const [updateCurrentDay,setUpdateCurrentDay] = useState(0)
   //const [update]
@@ -50,21 +56,10 @@ export default function Home() {
 
   }
 
-  const [mealDisplayList, setMealDisplayList] = useState<Array<DisplayableItem>>([])
-  const [updateDisplayList,setUpdateDisplayList] = useState(0)
+  const mealDisplayList = useAppSelector(selectList) 
+  const [updateDisplayList, setUpdateDisplayList] = useState(0)
 
-  const updateMealDisplayList = (newMeals: Array<Meal>) => {
-    console.log(newMeals)
-    var newDisplayList: Array<DisplayableItem> = new Array();
-    newMeals.forEach(element => {
-      newDisplayList.push({ meal: element, ingr: null, type: DisplayListType.MEAL, isClicked: false })
-    });
-      
-    setMealDisplayList(newDisplayList)
-    setUpdateDisplayList((prev) => prev + 1)
-    
-   
-  }
+
 
 
   var dummyIngr: Ingredient = { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 };
@@ -73,6 +68,8 @@ export default function Home() {
   var second: Meal = new Meal(  'cchicken',  [dummyMealIngr] );
   var firstMeal: Meal = new Meal(first.name, first.ingredientList)
   var secondMeal: Meal = new Meal(second.name, second.ingredientList)
+
+
   const [meals, setMeals] = useState<Array<Meal>>([firstMeal,secondMeal]);
   const [addMealClicked, setAddMealClicked] = useState(false);
 
@@ -97,22 +94,13 @@ export default function Home() {
     //TODO display serving of meal in left side and update calories and protein for day
     
     if (meals) {
-      console.log('In home eatMeal %d %d', index, amEaten, meals )
-      var eatenMeal = meals[index]
-      var servings = eatenMeal.servingSize() / amEaten
-      var newEntry: EatenEntry = { name: eatenMeal.name, cal: eatenMeal.totalCal()*servings, p: eatenMeal.totalP()*servings, servings:servings, editClicked: false };
-      newEntry.name = eatenMeal.name;
-      if (eatenList) {
-        console.log('In home eatMeal eatenList exitst')
-        setEatenList([...eatenList, newEntry])
-        
-      } else {
-        setEatenList([newEntry])
-        console.log(newEntry )
-        console.log('In home eatMeal no eaten list' )
-      }
-      setUpdateCurrentDay((prev) => prev + 1)
-      return true
+       // select display list item with index
+       // TODO check if index is valid
+       //
+
+       //convert diplay list item to eaten item
+
+       // add eaten item to eaten list
     }
 
     return false;
@@ -160,20 +148,10 @@ export default function Home() {
 // Use Effect
   useEffect(() => {
     
-    if (meals == undefined) {
-      
-      //etMeals([firstMeal, secondMeal])
+    dispatch(getProspectList());
 
-    }
   }, [])
 
-  useEffect(() => {
-    if (meals) {
-      //console.log(meals)
-      updateMealDisplayList(meals)
-    }
-
-  }, [meals])
 
   useEffect(() => {
     // TODO Call DB to see if theres record for new day
@@ -191,7 +169,7 @@ export default function Home() {
     </LeftSide>
 
     <RightSide>
-      <DivRow>
+      <div style={{ width: 'inherit', display: 'flex', borderBottom: '1px solid #000000ff'  }}>
 
 
         {addMealClicked ?
@@ -201,15 +179,15 @@ export default function Home() {
 
           :
 
-          <DivTable>
-            <StyledHeading>Meals</StyledHeading>
+          <AddMealWrapper>
+          
             <AddMealButton onClick={addMeal}>
               Add Meal
             </AddMealButton>
-          </DivTable>
+          </AddMealWrapper>
 
         }
-      </DivRow>
+      </div>
         
         <ProspectList listToDisplay={mealDisplayList} onDelete={deleteMeal} onEat={eatMeal} onEdit={editMeal}/>  
 
@@ -498,6 +476,13 @@ const DivTable = styled.div`
 
   
 `
+const AddMealWrapper = styled.div`
+
+display: grid;
+width: inherit;
+justify-content: center;
+
+`
 const DivRow = styled.div`
     
 display: flex;
@@ -555,13 +540,14 @@ const OperationButton = styled.button`
 `
 
 const AddMealButton = styled.button`
-width: 15vw;
-height: 10vh;
+
 margin: 5vh;
 font-size: 25px;
 background: #b1b3b5;
 border: none;
-border-radius: 5px
+font-size: 2vw;
+padding: 0 2vw;
+width: fit-content; 
 `
 // form
 

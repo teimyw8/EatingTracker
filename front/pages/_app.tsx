@@ -3,15 +3,18 @@ import { useRouter } from 'next/router'
 import { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
 import '../styling/home.css'
+import store from '../redux/store'
+
+import { Provider } from 'react-redux'
 
 
 const MyApp: FC<AppProps> = ({ Component, ...rest }) => {
 
   
   return (
-    <div>
+     <Provider store={store}>
       <AppShell Component={Component} {...rest} />
-    </div>
+    </Provider>
   )
 }
 

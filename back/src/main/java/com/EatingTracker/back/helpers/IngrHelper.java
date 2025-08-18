@@ -5,7 +5,9 @@ import com.EatingTracker.back.models.IngrModel;
 
 public class IngrHelper {
 
-
+//TODO i dont think these are necessary
+    //cant this just be implemented as contructors?
+    //same for mealhelper
     public static IngrModel ingrEntTo(Ingr ent){
 
         IngrModel newIngr = new IngrModel(ent.getCals(),ent.getProt(),ent.getName(), ent.getServG()) ;
