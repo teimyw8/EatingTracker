@@ -51,18 +51,18 @@ public class MealService {
         Meal mealToAdd = new Meal(newMeal.getName());
         mealRepository.save(mealToAdd);
 
-        
+
         for ( MealIngrModel x : newMeal.getIngrs() ){
 
-            if( ingrRepository.findById( UUID.fromString(x.getIngrId()) ).isPresent() ) {
+            if( ingrRepository.findById( UUID.fromString(x.getIngr().getId()) ).isPresent() ) {
                 
-                MealIngr tempMealIngr = new MealIngr(UUID.fromString(x.getIngrId()), mealToAdd.getId(), x.getAmm());
+                MealIngr tempMealIngr = new MealIngr(UUID.fromString(x.getIngr().getId()), mealToAdd.getId(), x.getAmm());
                 
                 mealIngrRepository.save(tempMealIngr);
 
             } else {
                 
-                throw new IngrNotFoundException(UUID.fromString(x.getIngrId()));
+                throw new IngrNotFoundException(UUID.fromString(x.getIngr().getId()));
             }
                         
         }

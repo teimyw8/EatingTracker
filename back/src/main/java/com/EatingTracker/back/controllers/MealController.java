@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/meal")
 public class MealController{
 

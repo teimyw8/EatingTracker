@@ -37,9 +37,13 @@ public class ProspectListService {
 
         //Get meals
         List<Meal> mealList = mealRepository.findAll();
+
+        System.out.println("Meal List: " + mealList);
         
         // Get ingredients
         List<Ingr> ingrList = ingrRepository.findAll();
+
+        System.out.println("Ingr List: " + ingrList);
 
         for( Meal meal : mealList ) {
 

@@ -6,9 +6,9 @@ import MealEntry from './components/mealEntry';
 import { EatenItem, Ingredient, Meal, MealIngr, DisplayableItem, DisplayListType, OZtoG, GtoOZ } from './components/commonTypes';
 import ProspectList from './components/prospectList';
 import { get } from 'http';
-import { getProspectList } from '../redux/thunks/prospectList.thunk';
+import { addMealAndRefreshList, getProspectList } from '../redux/thunks/prospectList.thunk';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { selectList } from '../redux/slices/prospectListSlice';
+import { addOne, selectList } from '../redux/slices/prospectListSlice';
 //TODO 
 //EAT MEAL
 //EATEN TOTAL
@@ -109,12 +109,9 @@ export default function Home() {
   };
   const submitAddMeal = ( newMeal: Meal) => {
 
-    if (meals) {
-      //console.log(meals)
-      setMeals([...meals, newMeal])
-    } else {
-      setMeals([newMeal])
-    }    
+    console.log("in home submitAddMeal")
+
+    dispatch(addMealAndRefreshList(newMeal))    
 
     setAddMealClicked(false)
 

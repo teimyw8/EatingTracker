@@ -115,9 +115,7 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
     //Meal Ingredients
     const [newMeal, setNewMeal] = useState<Meal>(new Meal('', []))
     const setMealName = (mealName: string) => {
-        var updateMeal = newMeal;
-        updateMeal.name = mealName;
-        setNewMeal(updateMeal);
+        setNewMeal({...newMeal, name: mealName})
     }
 
     const getMealName = () => {
@@ -155,25 +153,32 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
             setFormError({ ...formError, ingrName: 'Name is required' })
             errorCheck = true
         }
-        if (formValues.cal == '' && (formValues.c == '' || formValues.f == '')) {
-            setFormError({ ...formError, calCalc: 'Must provide either calories or both carbs and fat' })
-            errorCheck = true
+        if (formValues.cal == '' || Number.isNaN(formValues.cal)) {
 
+            if((formValues.c == '' || formValues.f == '') || (Number.isNaN(formValues.c) || Number.isNaN(formValues.f))) {
+                setFormError({ ...formError, calCalc: 'Must provide either calories or both carbs and fat' })
+                errorCheck = true
+            } else {
+                newIngr.cal = Ccal * Number(formValues.c) + Fcal * Number(formValues.f)
+            }        
         } else if (Number.isNaN(formValues.cal)) {
+
             setFormError({ ...formError, cal: 'Must be a number' })
             errorCheck = true
         } else {
             newIngr.cal = Number(formValues.cal)
         }
+
         if (Number.isNaN(formValues.c)) {
+
             if (formValues.c != '') {
                 setFormError({ ...formError, c: 'Must be a number' })
                 errorCheck = true
             }
-
         } else {
             newIngr.c = Number(formValues.c)
         }
+        
         if (Number.isNaN(formValues.p)) {
             if (formValues.p != '') {
                 setFormError({ ...formError, p: 'Must be a number' })
@@ -308,8 +313,10 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
     }
 
     const submitMeal = (e: any) => {
-        if (newMeal.name != '' && newMeal.ingredientList.length > 0) {
+        console.log('submitting meal meal entry', newMeal)
 
+        if (newMeal.name != '' && newMeal.ingredientList.length > 0) {
+            
             return onSubmit(newMeal)
         } else {
             if (newMeal.name == '') {
@@ -530,13 +537,13 @@ const MealEntry = ({ onSubmit, onCancel }: MealEntryProp): React.JSX.Element => 
                                 fontSize: '15px',
 
                             }}
-                        //size={newMeal.name == '' ? 9 : newMeal.name.length }
+                        size={newMeal.name == '' ? 9 : newMeal.name.length }
 
-                        //type="text"
-                        //id="MealName"
-                        //placeholder='Meal Name'
-                        //value={formValues.ingrName}
-                        //onChange={(e) => getFontSize(e.target.value )}
+                        type="text"
+                        id="MealName"
+                        placeholder='Meal Name'
+                        value={newMeal.name}
+                        onChange={(e) => setNewMeal({...newMeal, name: e.target.value})}
                         >
                             
                         </StyledInput>

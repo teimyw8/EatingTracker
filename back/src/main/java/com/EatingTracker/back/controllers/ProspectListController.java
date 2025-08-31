@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/prospectList")
 
 public class ProspectListController {

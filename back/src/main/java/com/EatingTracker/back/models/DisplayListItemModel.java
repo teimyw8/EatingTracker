@@ -4,18 +4,21 @@ public class DisplayListItemModel {
     private int type;
     private MealModel meal;
     private IngrModel ingr;
+    private boolean isClicked;
 
     public DisplayListItemModel() {}
 
     public DisplayListItemModel(int type, MealModel meal) {
         this.type = type;
-        this.meal = meal;  
+        this.meal = meal;
+        this.isClicked = false;
     }
 
 
     public DisplayListItemModel(int type,  IngrModel ingr) {
         this.type = type;
         this.ingr = ingr;
+        this.isClicked = false;
     }
 
     public int getType() {
