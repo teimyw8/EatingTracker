@@ -25,6 +25,6 @@ public class CurrentDayController {
 
     @PostMapping
     public ResponseEntity<String> addToDay(@RequestBody Date day, @RequestBody EatenItemModel item){
-
+        return currentDayService.addItemToDay(day, item);
     }
 }
