@@ -8,8 +8,11 @@ import java.util.UUID;
 @Entity
 @IdClass(EatenListId.class)
 @Table(name="EATENLIST")
-public class EatenList {
-    @Id
+
+// In the scenario where the same item is eaten multiple times in one day, combine the amounts rather than adding another entry
+// This is an ID limitation
+public class EatenListItem {
+
     @Column
     private EatenItemType type;
 
@@ -21,13 +24,17 @@ public class EatenList {
     @Column
     private UUID itemId;
 
-    public EatenList(EatenItemType type, Date dayId, UUID itemId) {
+    @Column
+    private float amm;
+
+    public EatenListItem(EatenItemType type, Date dayId, UUID itemId, float amm) {
         this.type = type;
         this.dayId = dayId;
         this.itemId = itemId;
+        this.amm = amm;
     }
 
-    public EatenList(){}
+    public EatenListItem(){}
 
     public EatenItemType getType() {
         return type;
@@ -39,6 +46,14 @@ public class EatenList {
 
     public Date getDayId() {
         return dayId;
+    }
+
+    public float getAmm() {
+        return amm;
+    }
+
+    public void setAmm(float amm) {
+        this.amm = amm;
     }
 
     public void setDayId(Date dayId) {

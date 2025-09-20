@@ -15,8 +15,8 @@ public class EatenListId implements Serializable {
 
     }
 
-    public EatenListId(EatenItemType type, Date dayID, UUID itemID) {
-        this.type = type;
+    public EatenListId( Date dayID, UUID itemID) {
+
         this.itemId = itemID;
         this.dayId = dayID;
     }

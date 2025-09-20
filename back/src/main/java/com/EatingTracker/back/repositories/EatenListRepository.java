@@ -1,11 +1,12 @@
 package com.EatingTracker.back.repositories;
 
-import com.EatingTracker.back.entities.EatenList;
+import com.EatingTracker.back.entities.EatenListItem;
 import com.EatingTracker.back.entities.EatenListId;
-import com.EatingTracker.back.entities.Ingr;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
+import java.sql.Date;
+import java.util.List;
 
-public interface EatenListRepository extends JpaRepository<EatenList, EatenListId> {
+public interface EatenListRepository extends JpaRepository<EatenListItem, EatenListId> {
+    List<EatenListItem> findByDate(Date day);
 }
