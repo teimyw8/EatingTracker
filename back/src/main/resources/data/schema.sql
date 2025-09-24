@@ -18,9 +18,9 @@ PRIMARY KEY (ingrId,mealId)
 
 CREATE TABLE IF NOT EXISTS EATENLIST(
 TYPE ENUM('meal', 'ingr'),
-dayID DATE,
-itemID UUID,
+dayId DATE,
+itemId UUID,
 amm FLOAT,
-PRIMARY KEY (dayID, itemID)
+PRIMARY KEY (dayId, itemId)
 );
 
