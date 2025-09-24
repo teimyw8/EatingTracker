@@ -106,4 +106,8 @@ public class IngrService {
 
     }
 
+    public boolean existsInDB(UUID id){
+        return ingrRepository.existsById(id);
+    }
+
 }

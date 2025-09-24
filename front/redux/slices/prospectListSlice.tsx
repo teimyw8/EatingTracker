@@ -12,7 +12,7 @@ export interface ProspectListState {
 
 const initialState = (): ProspectListState => {
   return {
-    list: [{ type: 2, meal: null, ingr: { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 }, isClicked: false }]
+    list: [{ type: 1, ingr: { name: 'dummyIngr', serv: 2, servOz: undefined, c: undefined, f: undefined, cal: 100, p: 10 }, isClicked: false }]
 
   }
 }

@@ -1,23 +1,23 @@
 package com.EatingTracker.back.entities;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class EatenListId implements Serializable {
 
     private EatenItemType type;
-    private Date dayId;
+    private LocalDate dayid;
 
-    private UUID itemId;
+    private UUID itemid;
 
     public EatenListId(){
 
     }
 
-    public EatenListId( Date dayID, UUID itemID) {
+    public EatenListId( LocalDate dayID, UUID itemID) {
 
-        this.itemId = itemID;
-        this.dayId = dayID;
+        this.itemid = itemID;
+        this.dayid = dayID;
     }
 }

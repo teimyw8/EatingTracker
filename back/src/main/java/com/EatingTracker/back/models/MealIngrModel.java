@@ -42,5 +42,12 @@ public class MealIngrModel {
     public void setIngr(IngrModel ingr) {
         this.ingr = ingr;
     }
-    
+
+    public void setIngrId(String ingrId) {
+        this.ingrId = ingrId;
+    }
+
+    public void setAmm(float amm) {
+        this.amm = amm;
+    }
 }

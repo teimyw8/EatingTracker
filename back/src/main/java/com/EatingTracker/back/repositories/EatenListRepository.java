@@ -4,9 +4,9 @@ import com.EatingTracker.back.entities.EatenListItem;
 import com.EatingTracker.back.entities.EatenListId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EatenListRepository extends JpaRepository<EatenListItem, EatenListId> {
-    List<EatenListItem> findByDate(Date day);
+    List<EatenListItem> findByDayid(LocalDate day);
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.EatingTracker.back.entities.EatenItemType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +49,13 @@ public class ProspectListService {
         for( Meal meal : mealList ) {
 
             List<MealIngrModel> mealIngrs = MealIngrRepository.mealIngrListToModel(mealIngrRepository.findByMealid(meal.getId()));
-            DisplayListItemModel item = new DisplayListItemModel(1, new MealModel(meal, mealIngrs));
+            DisplayListItemModel item = new DisplayListItemModel(EatenItemType.MEAL, new MealModel(meal, mealIngrs));
             prospectList.add(item);
         }
 
         for( Ingr ingr : ingrList ) {
 
-            DisplayListItemModel item = new DisplayListItemModel(2, new IngrModel(ingr));
+            DisplayListItemModel item = new DisplayListItemModel(EatenItemType.INGR, new IngrModel(ingr));
             prospectList.add(item);
         }
 

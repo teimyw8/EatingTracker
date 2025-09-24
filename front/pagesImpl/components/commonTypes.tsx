@@ -50,7 +50,7 @@ export class MealIngr {
 
 export class Meal {
     name :string
-    id: string
+    id?: string
     ingredientList : Array<MealIngr>
    
     
@@ -103,8 +103,8 @@ export interface EatenItem {
 //IF type == MEAL(1) 
 export interface DisplayableItem{
     type: DisplayListType;
-    meal: Meal | null;
-    ingr: Ingredient | null;
+    meal?: Meal;
+    ingr?: Ingredient;
     isClicked: boolean;
 }
 
@@ -137,8 +137,8 @@ export enum MeasuringUnitType{
 
 
 export enum DisplayListType {
-    MEAL = 1,
-    INGR = 2
+    MEAL = 0,
+    INGR = 1
   }
 
 export const OZtoG : number = 28.3495;

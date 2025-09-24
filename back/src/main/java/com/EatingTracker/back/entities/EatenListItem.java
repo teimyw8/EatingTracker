@@ -2,7 +2,7 @@ package com.EatingTracker.back.entities;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -18,19 +18,19 @@ public class EatenListItem {
 
     @Id
     @Column
-    private Date dayId;
+    private LocalDate dayid;
 
     @Id
     @Column
-    private UUID itemId;
+    private UUID itemid;
 
     @Column
     private float amm;
 
-    public EatenListItem(EatenItemType type, Date dayId, UUID itemId, float amm) {
+    public EatenListItem(EatenItemType type, LocalDate dayId, UUID itemId, float amm) {
         this.type = type;
-        this.dayId = dayId;
-        this.itemId = itemId;
+        this.dayid = dayId;
+        this.itemid = itemId;
         this.amm = amm;
     }
 
@@ -44,8 +44,8 @@ public class EatenListItem {
         this.type = type;
     }
 
-    public Date getDayId() {
-        return dayId;
+    public LocalDate getDayId() {
+        return dayid;
     }
 
     public float getAmm() {
@@ -56,15 +56,15 @@ public class EatenListItem {
         this.amm = amm;
     }
 
-    public void setDayId(Date dayId) {
-        this.dayId = dayId;
+    public void setDayId(LocalDate dayId) {
+        this.dayid = dayId;
     }
 
     public UUID getItemId() {
-        return itemId;
+        return itemid;
     }
 
     public void setItemId(UUID itemId) {
-        this.itemId = itemId;
+        this.itemid = itemId;
     }
 }

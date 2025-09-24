@@ -1,6 +1,6 @@
 package com.EatingTracker.back.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -15,18 +15,18 @@ import jakarta.persistence.*;
 public class CurrentDay {
     @Column
     @Id
-    private Date today;
+    private LocalDate today;
 
     public CurrentDay(){}
-    public CurrentDay(Date today) {
+    public CurrentDay(LocalDate today) {
         this.today = today;
     }
 
-    public Date getToday() {
+    public LocalDate getToday() {
         return today;
     }
 
-    public void setToday(Date today) {
+    public void setToday(LocalDate today) {
         this.today = today;
     }
 }

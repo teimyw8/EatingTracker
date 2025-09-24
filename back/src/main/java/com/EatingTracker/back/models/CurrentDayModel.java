@@ -1,26 +1,26 @@
 package com.EatingTracker.back.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CurrentDayModel {
 
-    private Date today;
+    private LocalDate today;
 
     private List<EatenItemModel> eatenList;
 
 
-    public CurrentDayModel(Date today, List<EatenItemModel> eatenList) {
+    public CurrentDayModel(LocalDate today, List<EatenItemModel> eatenList) {
         this.today = today;
         this.eatenList = eatenList;
     }
     public CurrentDayModel(){}
 
-    public Date getToday() {
+    public LocalDate getToday() {
         return today;
     }
 
-    public void setToday(Date today) {
+    public void setToday(LocalDate today) {
         this.today = today;
     }
 

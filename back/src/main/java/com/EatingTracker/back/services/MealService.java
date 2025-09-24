@@ -4,6 +4,7 @@ import com.EatingTracker.back.models.MealIngrModel;
 import com.EatingTracker.back.models.MealModel;
 
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,18 +52,17 @@ public class MealService {
         Meal mealToAdd = new Meal(newMeal.getName());
         mealRepository.save(mealToAdd);
 
-
         for ( MealIngrModel x : newMeal.getIngrs() ){
 
-            if( ingrRepository.findById( UUID.fromString(x.getIngr().getId()) ).isPresent() ) {
+            if( ingrRepository.findById( UUID.fromString(x.getIngrId()) ).isPresent() ) {
                 
-                MealIngr tempMealIngr = new MealIngr(UUID.fromString(x.getIngr().getId()), mealToAdd.getId(), x.getAmm());
+                MealIngr tempMealIngr = new MealIngr(UUID.fromString(x.getIngrId()), mealToAdd.getId(), x.getAmm());
                 
                 mealIngrRepository.save(tempMealIngr);
 
             } else {
                 
-                throw new IngrNotFoundException(UUID.fromString(x.getIngr().getId()));
+                throw new IngrNotFoundException( UUID.fromString(x.getIngrId()) );
             }
                         
         }
@@ -153,7 +153,6 @@ public class MealService {
         if( mealToDelete.isPresent() ){
             mealRepository.delete(mealToDelete.get());
 
-            //TODO delete all mealingr w meal id
             List<MealIngr> mealIngrsToDelete = mealIngrRepository.findByMealid(UUID.fromString(id));
 
             for ( MealIngr mealIngr : mealIngrsToDelete ){
@@ -168,6 +167,9 @@ public class MealService {
 
 
         
+    }
+    public boolean existsInDB(UUID id){
+        return mealRepository.existsById(id);
     }
 }
 
