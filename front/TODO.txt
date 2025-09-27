@@ -1,5 +1,11 @@
-Retrieve Current Day
-Add to current Day
+Retrieve Current Day thunk      xxxx
+Add to current Day thunk        xxxx
+
+Retrieve current day implement 
+Retrieve current day test
+add to current day implement
+add to current day test+
+
 edit current Day
 Change Day
 
