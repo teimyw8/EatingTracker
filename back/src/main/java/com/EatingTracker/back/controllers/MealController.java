@@ -42,7 +42,7 @@ public class MealController{
         } catch (IngrNotFoundException e){
 
             System.out.println("Exception caught :  " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
        
     }

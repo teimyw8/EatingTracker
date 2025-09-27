@@ -6,13 +6,13 @@ public class EatenItemInputModel {
     private String day;
     private String id;
     private float amm;
-    private EatenItemType type;
+    private int type;
 
     EatenItemInputModel(){
 
     }
 
-    public EatenItemInputModel(String id, float amm, EatenItemType type, String day) {
+    public EatenItemInputModel(String id, float amm, int type, String day) {
         this.id = id;
         this.amm = amm;
         this.type = type;
@@ -43,11 +43,11 @@ public class EatenItemInputModel {
         this.amm = amm;
     }
 
-    public EatenItemType getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(EatenItemType type) {
+    public void setType(int type) {
         this.type = type;
     }
 }

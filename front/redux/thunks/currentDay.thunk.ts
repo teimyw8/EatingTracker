@@ -1,19 +1,32 @@
 import axios from 'axios';
-import { add } from '../slices/currentDaySlice';
+import { add, addMany, IEatenItemActionPayload, selectItemToAdd } from '../slices/currentDaySlice';
 import { apiBaseUri } from '../../pagesImpl/components/commonTypes';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppThunk } from '../store';
 
 // Get current day
 export const loadCurrentDay = () : AppThunk => async (dispatch: any) => {
-    const response = await axios.get(apiBaseUri + '/currentDay');
+    const response = await axios.get(apiBaseUri + '/day');
 
 
-    if (response.status === 200) {
+    if (response.status === 200) {  
         const data = response.data;
-        dispatch(add);
+        dispatch(addMany({item: data}));
     }
 
+}
+
+export const addItemToAdd = () : AppThunk => async (dispatch: any) => {
+
+    const itemToAdd :  IEatenItemActionPayload  = useSelector(selectItemToAdd);
+
+    const response = await axios({
+        url: apiBaseUri + '/day',
+        method: 'post',
+        data: { itemToAdd
+            },
+            
+    });
 }
 
 

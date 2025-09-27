@@ -50,7 +50,7 @@ public class IngrService {
         } catch (Exception e) {
 
             System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         }
     }
@@ -101,7 +101,7 @@ public class IngrService {
             return new ResponseEntity<String>("Ingredient deleted successfully",HttpStatus.OK);
         } else {
 
-            return new ResponseEntity<String>("Ingredient doesnt exist",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Ingredient doesnt exist",HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
     }

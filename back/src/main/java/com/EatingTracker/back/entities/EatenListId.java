@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public class EatenListId implements Serializable {
 
-    private EatenItemType type;
     private LocalDate dayid;
 
     private UUID itemid;

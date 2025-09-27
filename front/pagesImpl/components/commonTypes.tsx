@@ -137,6 +137,7 @@ export enum MeasuringUnitType{
 
 
 export enum DisplayListType {
+    EMPTY = -1,
     MEAL = 0,
     INGR = 1
   }
